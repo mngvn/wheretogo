@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Amsterdam &amp; Paris</title>
-<meta name="description" content="Nov 27 – Dec 7, 2026 · three travelers · day-by-day itinerary and shared budget">
+<meta name="description" content="Nov 27 – Dec 7, 2026 · day-by-day itinerary and shared budget">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,9 +82,15 @@
   .stop.par b { color: var(--par); }
   .leg { display: flex; align-items: center; padding: 0 8px; font-size: 12px; color: var(--muted); font-style: italic; text-align: center; max-width: 92px; line-height: 1.25; }
 
-  /* Banner */
-  .banner { margin: 8px 0 28px; padding: 14px 16px; border-radius: 12px; background: var(--warn-bg); border: 1px solid var(--warn-line); font-size: 15px; }
-  .banner strong { font-weight: 600; }
+  /* Traveler picker */
+  .picker { margin: 8px 0 28px; padding: 14px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .picker .q { font-weight: 600; }
+  .picker .q small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+  .stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-2); }
+  .stepper button { font: inherit; font-size: 22px; line-height: 1; width: 44px; height: 44px; border: 0; background: none; color: var(--text); cursor: pointer; border-radius: 999px; }
+  .stepper button:disabled { opacity: .3; cursor: default; }
+  .stepper button:not(:disabled):hover { background: var(--line); }
+  .stepper output { min-width: 56px; text-align: center; font-family: Fraunces, Georgia, serif; font-size: 26px; font-weight: 700; }
 
   /* Sections */
   section { padding: 28px 0; border-top: 1px solid var(--line); }
@@ -92,7 +98,7 @@
   section > .lede { color: var(--muted); margin: 0 0 18px; }
 
   /* Budget */
-  .totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0 20px; }
+  .totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 16px 0 20px; }
   .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
   .tile .label { font-size: 13px; color: var(--muted); }
   .tile .value { font-family: Fraunces, Georgia, serif; font-size: 36px; font-weight: 700; margin-top: 2px; }
@@ -107,8 +113,6 @@
   td .note { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
   tr.total td { font-weight: 600; border-bottom: 0; }
   .table-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px 8px; overflow-x: auto; }
-  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: var(--surface-2); color: var(--muted); margin-left: 6px; vertical-align: 2px; white-space: nowrap; }
-  .tag.est { background: var(--warn-bg); color: inherit; border: 1px solid var(--warn-line); }
 
   /* Days */
   .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -116,7 +120,7 @@
   .filters button[aria-pressed="true"] { background: var(--accent); color: var(--bg); border-color: var(--accent); }
   .days { display: grid; gap: 14px; }
   .day { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
-  .day-head { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center; padding: 14px 16px; }
+  .day-head { display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center; padding: 14px 16px; }
   .date { text-align: center; border-radius: 12px; padding: 6px 0; background: var(--surface-2); }
   .date .dow { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; color: var(--muted); }
   .date .dom { font-family: Fraunces, Georgia, serif; font-size: 26px; font-weight: 700; line-height: 1.05; }
@@ -126,23 +130,12 @@
   .day.home .date { background: var(--home-soft); } .day.home .date .dom { color: var(--home); }
   .day-title h3 { font-size: 20px; }
   .day-title .city { font-size: 13px; color: var(--muted); }
-  .day-cost { text-align: right; font-size: 13px; color: var(--muted); }
-  .day-cost b { display: block; font-size: 16px; color: var(--text); font-weight: 600; }
-  .day-body { padding: 0 16px 16px; display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .day-body { padding: 0 16px 16px; display: grid; gap: 14px; }
   .plan { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
   .plan li { display: grid; grid-template-columns: 84px 1fr; gap: 10px; }
   .plan .when { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; color: var(--muted); padding-top: 2px; }
-  .costs { background: var(--surface-2); border-radius: 12px; padding: 10px 12px; font-size: 14px; }
-  .costs .row { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
-  .costs .row span:last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .costs .row.sum { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 6px; font-weight: 600; }
-  .costs .hd { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
   .tip { font-size: 14px; border-left: 3px solid var(--line); padding-left: 10px; color: var(--muted); }
   .day.ams .tip { border-color: var(--ams); } .day.par .tip { border-color: var(--par); }
-  @media (min-width: 720px) {
-    .day-body { grid-template-columns: 1.6fr 1fr; align-items: start; }
-    .day-body .tip { grid-column: 1 / -1; }
-  }
 
   /* Checklist */
   .checklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
@@ -151,7 +144,6 @@
   .checklist .t { font-weight: 600; }
   .checklist .d { display: block; font-size: 14px; color: var(--muted); }
   .checklist input:checked + span .t { text-decoration: line-through; color: var(--muted); }
-  .badge3 { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--ams); color: #fff; margin-left: 6px; vertical-align: 2px; }
 
   ul.plain { padding-left: 20px; margin: 0; }
   ul.plain li { margin: 6px 0; }
@@ -163,11 +155,8 @@
     .stop { padding: 8px 10px; }
     .stop b { font-size: 18px; }
     .day-head { grid-template-columns: 56px 1fr; }
-    .day-cost { grid-column: 2; text-align: left; }
-    .day-cost b { display: inline; margin-right: 6px; }
     .plan li { grid-template-columns: 1fr; gap: 0; }
     th, td { padding: 9px 6px; }
-    .hide-sm { display: none; }
   }
 </style>
 </head>
@@ -176,7 +165,7 @@
 
 <div class="wrap">
   <header class="hero">
-    <div class="eyebrow">Nov 27 – Dec 7, 2026 · three travelers</div>
+    <div class="eyebrow">Nov 27 – Dec 7, 2026 · <span class="nTravelers">3 travelers</span></div>
     <h1>Amsterdam &amp; Paris</h1>
     <div class="route" aria-label="Route">
       <div class="stop"><b>MSP</b><span>Fri 27 Nov</span></div>
@@ -189,21 +178,25 @@
     </div>
   </header>
 
-  <div class="banner">
-    <strong>Now three of us.</strong> Every per-person ticket, the food budget, the Eurostar and the lodging have been re-costed for three. Rooms, the Airbnb and the third flight are the numbers to confirm first; see <a href="#book">Book these now</a>.
+  <div class="picker">
+    <div class="q">How many people are going?<small>The budget below updates to match.</small></div>
+    <div class="stepper">
+      <button type="button" id="minus" aria-label="One fewer traveler">−</button>
+      <output id="nOut" aria-live="polite">3</output>
+      <button type="button" id="plus" aria-label="One more traveler">+</button>
+    </div>
   </div>
 
   <section id="budget">
     <h2>Budget</h2>
-    <p class="lede">Estimated total for three. <span id="fxNote"></span></p>
+    <p class="lede">The big shared purchases for the whole group. Food, transit and attraction tickets are left out. €1 = $<span id="fx"></span>.</p>
     <div class="totals">
-      <div class="tile primary"><div class="label">Total, for three</div><div class="value num" id="tTotal"></div><div class="sub" id="tTotalSub"></div></div>
+      <div class="tile primary"><div class="label">Total, for <span class="nTravelers">3 travelers</span></div><div class="value num" id="tTotal"></div><div class="sub">flights, lodging, Eurostar and extras</div></div>
       <div class="tile"><div class="label">Per person</div><div class="value num" id="tEach"></div><div class="sub">if everything is split evenly</div></div>
-      <div class="tile"><div class="label">Day-to-day, per person</div><div class="value num" id="tDaily"></div><div class="sub">tickets, transit and food</div></div>
     </div>
     <div class="table-card">
       <table>
-        <thead><tr><th>Item</th><th class="r">For 3</th><th class="r">Each</th></tr></thead>
+        <thead><tr><th>Item</th><th class="r">Group</th><th class="r">Each</th></tr></thead>
         <tbody id="budgetRows"></tbody>
       </table>
     </div>
@@ -211,7 +204,7 @@
 
   <section id="days">
     <h2>Day by day</h2>
-    <p class="lede">Costs on each day are for all three of us. Sunset is around 4:30pm, so outdoor things go mid-day and museums and lights go later.</p>
+    <p class="lede">Sunset is around 4:30pm, so outdoor things go mid-day and museums and lights go later.</p>
     <div class="filters" role="group" aria-label="Filter days">
       <button type="button" data-f="all" aria-pressed="true">All days</button>
       <button type="button" data-f="ams" aria-pressed="false">Amsterdam</button>
@@ -222,7 +215,7 @@
 
   <section id="book">
     <h2>Book these now</h2>
-    <p class="lede">The trip is four weeks out. Cheap Eurostar fares and popular timeslots go first. Book all three people in one order so you get seats and slots together. Ticks are saved in your own browser only, so they won't show up for the others.</p>
+    <p class="lede">The trip is four weeks out. Cheap Eurostar fares and popular timeslots go first. Book everyone in one order so you get seats and slots together. Ticks are saved in your own browser only, so they won't show up for anyone else.</p>
     <ul class="checklist" id="checklist"></ul>
   </section>
 
@@ -230,10 +223,10 @@
     <h2>Good to know</h2>
     <ul class="plain">
       <li>ETIAS isn't required for this trip. It has no launch date yet, and there's a transition period once it starts.</li>
-      <li>Amsterdam: each person taps their own Visa or Mastercard (not Amex) in and out on trams and trains. One card can't pay for three people.</li>
-      <li>Paris: one Navigo Easy card each (€2). The CDG airport ticket can't share a card with regular tickets, so buy it Monday morning.</li>
+      <li>Amsterdam: each person taps their own Visa or Mastercard (not Amex) in and out on trams and trains. One card can't pay for the group.</li>
+      <li>Paris: one Navigo Easy card each. The CDG airport ticket can't share a card with regular tickets, so buy it Monday morning.</li>
       <li>Sunset is around 4:30pm. Do outdoor stuff mid-day, museums and lights later.</li>
-      <li>Tables for three are easy at lunch but book dinners on Fri and Sat, especially in Paris.</li>
+      <li>Lunch is easy to walk into, but book dinners on Fri and Sat, especially in Paris.</li>
       <li>Splitting costs: one person books each group purchase and the others pay them back. A shared expense app (Splitwise or similar) keeps it simple.</li>
     </ul>
   </section>
@@ -242,11 +235,12 @@
     <h2>Assumptions</h2>
     <ul class="plain">
       <li>The euro rate is €1 = $1.16.</li>
-      <li>Flights for the original two (≈<span class="num" id="aFlights2"></span>) are backed out of the original $5,187 total. The third traveler's flight is a placeholder of <span class="num" id="aFlight3"></span> until it's booked.</li>
-      <li>Amsterdam hotel: was $583 for two. Budgeted at $783 for a triple room or an added bed. Paris Airbnb: was $700. Budgeted at $820 for an extra-guest fee and the per-person city tax.</li>
-      <li>Trip-wide extras were $343 for two. They're scaled to $515 on the assumption they're per-person costs.</li>
-      <li>Eurostar is estimated at €80 each (was €70). Being four weeks out instead of six, and needing three seats together, pushes the typical €55–99 fare up.</li>
-      <li>Food is about €55 per person per day, or €165/day for three. That's a bakery breakfast ~€7, casual lunch ~€18, sit-down dinner ~€25, and coffee and snacks ~€5. Monday the 7th is breakfast only.</li>
+      <li>Flights: the first two seats are ≈$810 each, backed out of the original two-person budget. Each seat booked now is estimated at ≈$1,000 until it's actually booked.</li>
+      <li>Amsterdam hotel: $583 for one room for 4 nights. Rooms are doubles, and an odd person out turns one double into a triple (+$200).</li>
+      <li>Paris Airbnb: $700 for two, plus ≈$120 for each extra guest (fee and city tax). This assumes the place sleeps everyone.</li>
+      <li>Eurostar is estimated at €80 each. Being four weeks out and booking seats together pushes the typical €55–99 fare up.</li>
+      <li>Trip-wide extras are ≈$172 per person (the original $343 for two).</li>
+      <li>Food, local transit, museum and attraction tickets aren't included in the budget.</li>
       <li>Card foreign-transaction fees can add 1–3% unless you use a no-FX-fee card.</li>
     </ul>
   </section>
@@ -268,38 +262,55 @@
   </section>
 
   <footer>
-    Prices checked Oct 18, 2026, and re-costed for three travelers on Oct 29, 2026. These are estimates, so confirm before booking.
+    Prices checked Oct 18, 2026, and updated Oct 29, 2026. These are estimates, so confirm before booking.
   </footer>
 </div>
 
 <script>
 /* ---------- Trip data: edit numbers here ---------- */
-const FX = 1.16;            // USD per EUR
-const PEOPLE = 3;
+const FX = 1.16;              // USD per EUR
+const DEFAULT_PEOPLE = 3;
+const MIN_PEOPLE = 1, MAX_PEOPLE = 10;
 
-// Flights: the original two weren't itemised, so they're backed out of the old $5,187 total.
-const FLIGHTS_FIRST_TWO = 1619;
-const FLIGHT_THIRD = 1000;  // placeholder until booked
+const FLIGHT_EARLY = 809.5;   // per seat, first two (backed out of the original $5,187 two-person total)
+const FLIGHT_NOW = 1000;      // per seat, each one booked now (placeholder until booked)
+const HOTEL_ROOM = 583;       // Amsterdam, one double room, 4 nights
+const HOTEL_TRIPLE_EXTRA = 200;
+const AIRBNB_BASE = 700;      // Paris, 5 nights, two guests
+const AIRBNB_EXTRA_GUEST = 120;
+const EUROSTAR_EUR = 80;      // per person
+const EXTRAS_EACH = 171.5;    // trip-wide extras per person
 
-// Group-level costs in USD (already for all three).
+const plural = (n, w) => n + " " + w + (n === 1 ? "" : "s");
+
+// Each item returns the USD cost for the whole group of n people.
 const BIG = [
-  { label: "Flights · MSP → AMS, CDG → MSP", usd: FLIGHTS_FIRST_TWO + FLIGHT_THIRD,
-    note: "Original two ≈ $" + FLIGHTS_FIRST_TWO.toLocaleString() + " + third seat ≈ $" + FLIGHT_THIRD.toLocaleString(), est: true },
-  { label: "Amsterdam hotel · 4 nights", usd: 783, note: "Was $583 for two. Triple room or extra bed", est: true },
-  { label: "Paris Airbnb · 5 nights", usd: 820, note: "Was $700. Extra-guest fee + city tax for a third guest", est: true },
-  { label: "Trip-wide extras", usd: 515, note: "Was $343 for two. Not tied to a single day", est: true },
+  { label: "Flights · MSP → AMS, CDG → MSP",
+    cost: n => FLIGHT_EARLY * Math.min(n, 2) + FLIGHT_NOW * Math.max(n - 2, 0),
+    note: n => n <= 2 ? "≈$810 a seat" : "≈$810 a seat for the first two, ≈$1,000 for each seat booked now" },
+  { label: "Amsterdam hotel · 4 nights",
+    cost: n => n <= 2 ? HOTEL_ROOM : Math.floor(n / 2) * HOTEL_ROOM + (n % 2) * HOTEL_TRIPLE_EXTRA,
+    note: n => n === 1 ? "One room"
+      : n === 2 ? "One double room"
+      : n === 3 ? "One triple room"
+      : plural(Math.floor(n / 2), "room") + (n % 2 ? ", one of them a triple" : "") },
+  { label: "Paris Airbnb · 5 nights",
+    cost: n => AIRBNB_BASE + Math.max(n - 2, 0) * AIRBNB_EXTRA_GUEST,
+    note: n => n <= 2 ? "Booked for two" : "$700 base + ≈$120 per extra guest. Needs to sleep " + n },
+  { label: "Eurostar · Amsterdam → Paris",
+    cost: n => n * EUROSTAR_EUR * FX,
+    note: n => "€" + EUROSTAR_EUR + " each · Wed 2 Dec" },
+  { label: "Trip-wide extras",
+    cost: n => n * EXTRAS_EACH,
+    note: n => "≈$172 each · not tied to a single day" },
 ];
 
-// Day costs: eur is PER PERSON unless group:true.
-const FOOD = 55;
 const DAYS = [
   { date: "2026-11-27", city: "home", title: "Minneapolis → Amsterdam", where: "MSP · overnight flight",
     plan: [
-      ["Afternoon", "Check in at MSP. If the third ticket is on a separate booking, link the reservations or ask the airline so you can sit together."],
+      ["Afternoon", "Check in at MSP. If anyone is on a separate booking, link the reservations or ask the airline so you can sit together."],
       ["Overnight", "Sleep as much as you can. We land Saturday morning."],
-    ],
-    costs: [],
-    tip: "Flight costs sit in the trip-wide budget above, not on this day." },
+    ] },
 
   { date: "2026-11-28", city: "ams", title: "Arrive & ease in", where: "Amsterdam · Jordaan",
     plan: [
@@ -307,42 +318,37 @@ const DAYS = [
       ["Midday", "Apple pie at Winkel 43 and the Saturday Noordermarkt farmers' market, then wander the Jordaan canals."],
       ["Afternoon", "Check in. A nap is allowed, but keep it under an hour."],
       ["Evening", "Early dinner and a drink at a brown café like ’t Smalle. Bed early."],
-    ],
-    costs: [{ label: "Schiphol → Centraal train", eur: 6.5 }, { label: "Food", eur: FOOD }] },
+    ] },
 
   { date: "2026-11-29", city: "ams", title: "Museumplein & lights", where: "Amsterdam · Museum Quarter",
     plan: [
-      ["Morning", "Van Gogh Museum on a timed slot. Book all three tickets together."],
+      ["Morning", "Van Gogh Museum on a timed slot. Book everyone's tickets together."],
       ["Midday", "Walk through Vondelpark to lunch at Foodhallen."],
-      ["Afternoon", "Optional: the Rijksmuseum (~€25, not budgeted), or coffee in De Pijp."],
+      ["Afternoon", "Optional: the Rijksmuseum, or coffee in De Pijp."],
       ["Evening", "Walk the Amsterdam Light Festival route once it's dark, if the festival has opened. It usually starts in late November."],
-    ],
-    costs: [{ label: "Van Gogh Museum", eur: 25 }, { label: "Trams", eur: 5 }, { label: "Food", eur: FOOD }] },
+    ] },
 
   { date: "2026-11-30", city: "ams", title: "Canals & Anne Frank", where: "Amsterdam · Canal Ring",
     plan: [
       ["Morning", "Shops and coffee in the Nine Streets (De 9 Straatjes)."],
-      ["Midday", "Anne Frank House on a timed slot, with all three on one booking."],
+      ["Midday", "Anne Frank House on a timed slot, with everyone on one booking."],
       ["Afternoon", "Westerkerk, the Begijnhof courtyard and the Bloemenmarkt."],
       ["Evening", "Light Festival canal cruise after dark, then dinner."],
-    ],
-    costs: [{ label: "Anne Frank House", eur: 16 }, { label: "Light Festival cruise", eur: 25 }, { label: "Trams", eur: 5 }, { label: "Food", eur: FOOD }] },
+    ] },
 
   { date: "2026-12-01", city: "ams", title: "Haarlem day trip", where: "Haarlem · 15 min by train",
     plan: [
       ["Morning", "Train from Centraal to Haarlem. See the Grote Markt and St. Bavo church."],
       ["Afternoon", "Optional: the Frans Hals Museum. Then a beer at Jopenkerk, a brewery inside a church."],
-      ["Evening", "Back to Amsterdam for an Indonesian rijsttafel dinner (it works well for three). Pack for tomorrow's train."],
-    ],
-    costs: [{ label: "Haarlem train, return", eur: 9.5 }, { label: "Trams", eur: 5 }, { label: "Food", eur: FOOD }] },
+      ["Evening", "Back to Amsterdam for an Indonesian rijsttafel dinner (made for sharing). Pack for tomorrow's train."],
+    ] },
 
   { date: "2026-12-02", city: "par", title: "Eurostar to Paris", where: "Amsterdam → Paris · 3h25",
     plan: [
-      ["Morning", "Be at Amsterdam Centraal 45 min early for the Eurostar. Pick a table of four in Standard so all three sit together."],
-      ["Afternoon", "Arrive at Gare du Nord. Buy three Navigo Easy cards at the station and take the metro to the Airbnb."],
+      ["Morning", "Be at Amsterdam Centraal 45 min early for the Eurostar. Pick seats together when booking (tables of four in Standard)."],
+      ["Afternoon", "Arrive at Gare du Nord. Buy a Navigo Easy card for each person at the station and take the metro to the Airbnb."],
       ["Evening", "Walk the Seine after dark from Hôtel de Ville to Pont des Arts. Dinner in the Marais."],
-    ],
-    costs: [{ label: "Eurostar", eur: 80 }, { label: "Navigo Easy card", eur: 2 }, { label: "Metro", eur: 5 }, { label: "Food", eur: FOOD }] },
+    ] },
 
   { date: "2026-12-03", city: "par", title: "Montmartre & Orsay", where: "Paris · Museum Pass day 1",
     plan: [
@@ -351,8 +357,7 @@ const DAYS = [
       ["Afternoon", "Start the 2-day Museum Pass at the Musée d'Orsay around 3pm. It's open late on Thursdays."],
       ["Evening", "Dinner in Saint-Germain."],
     ],
-    costs: [{ label: "Paris Museum Pass, 2 days", eur: 70 }, { label: "Metro", eur: 5 }, { label: "Food", eur: FOOD }],
-    tip: "Pass covers Orsay, the Louvre, Sainte-Chapelle and the Arc de Triomphe. That's more than €70 each bought separately, now that the Louvre charges non-EU visitors more." },
+    tip: "The 2-day pass covers Orsay, the Louvre, Sainte-Chapelle and the Arc de Triomphe. It works out cheaper than buying them separately, now that the Louvre charges non-EU visitors more." },
 
   { date: "2026-12-04", city: "par", title: "Île de la Cité & the Louvre", where: "Paris · Museum Pass day 2",
     plan: [
@@ -360,102 +365,94 @@ const DAYS = [
       ["Midday", "Lunch in the Latin Quarter and a stop at Shakespeare and Company."],
       ["Afternoon", "The Louvre. You need a timed slot even with the pass. It's open late on Fridays."],
       ["Evening", "Tuileries, then the Champs-Élysées Christmas lights, ending on the Arc de Triomphe rooftop (on the pass)."],
-    ],
-    costs: [{ label: "Metro", eur: 5 }, { label: "Food", eur: FOOD }] },
+    ] },
 
   { date: "2026-12-05", city: "par", title: "Eiffel Tower day", where: "Paris · 7th arrondissement",
     plan: [
       ["Morning", "Trocadéro for the classic photo, then the Rue Cler market street."],
-      ["Midday", "Eiffel Tower summit by lift, with three tickets in one order. Mid-day gives the clearest view."],
+      ["Midday", "Eiffel Tower summit by lift, with everyone on one order. Mid-day gives the clearest view."],
       ["Afternoon", "Seine cruise timed for sunset (~4:30pm)."],
-      ["Evening", "The tower sparkles for five minutes on the hour after dark. Book Saturday dinner for three."],
-    ],
-    costs: [{ label: "Eiffel Tower summit", eur: 36 }, { label: "Seine cruise", eur: 18 }, { label: "Metro", eur: 5 }, { label: "Food", eur: FOOD }] },
+      ["Evening", "The tower sparkles for five minutes on the hour after dark. Book Saturday dinner ahead."],
+    ] },
 
   { date: "2026-12-06", city: "par", title: "Marais Sunday", where: "Paris · Le Marais",
     plan: [
       ["Morning", "Place des Vosges and the Musée Carnavalet (free)."],
       ["Midday", "Falafel on Rue des Rosiers. L'As du Fallafel is open Sundays."],
       ["Afternoon", "The Marais shops stay open on Sundays. Then walk up to Canal Saint-Martin."],
-      ["Evening", "Farewell dinner (book a table for three) and pack."],
-    ],
-    costs: [{ label: "Metro", eur: 5 }, { label: "Food", eur: FOOD }] },
+      ["Evening", "Farewell dinner (book ahead) and pack."],
+    ] },
 
   { date: "2026-12-07", city: "home", title: "Paris → Minneapolis", where: "CDG · flight home",
     plan: [
       ["Morning", "Last bakery breakfast. Buy the CDG airport ticket this morning, on its own (it can't share a Navigo Easy with regular tickets)."],
       ["Then", "RER B to Charles de Gaulle. Leave the Airbnb about 3½ hours before departure."],
-    ],
-    costs: [{ label: "CDG airport ticket", eur: 14 }, { label: "Breakfast & coffee", eur: 10 }] },
+    ] },
 ];
 
 const BOOK = [
-  { t: "Third flight", d: "Same flights as the other two if you can. Then link the bookings or pick seats together.", new3: true },
-  { t: "Add a third guest at the Amsterdam hotel", d: "Switch to a triple room or add a bed. Confirm the price and the city tax.", new3: true },
-  { t: "Add a third guest to the Paris Airbnb", d: "Check it actually sleeps three and update the guest count so the fee and tax are right.", new3: true },
-  { t: "Eurostar · Wed 2 Dec", d: "Three seats on one booking, ideally a table of four. Fares climb fast now." },
-  { t: "Anne Frank House · Mon 30 Nov", d: "Timed slots sell out. If two tickets are already booked, try to add a third for the same slot." },
-  { t: "Van Gogh Museum · Sun 29 Nov", d: "Timed entry, three tickets." },
+  { t: "Flights for everyone", d: "Same flights for the whole group if you can, then link the bookings or pick seats together." },
+  { t: "Amsterdam hotel rooms", d: "Make sure there's a bed for everyone (doubles, or a triple). Confirm the price and the city tax." },
+  { t: "Paris Airbnb guest count", d: "Check it sleeps the whole group and update the guest count so the fee and tax are right." },
+  { t: "Eurostar · Wed 2 Dec", d: "All seats on one booking so you sit together. Fares climb fast now." },
+  { t: "Anne Frank House · Mon 30 Nov", d: "Timed slots sell out. If some tickets are already booked, try to add the rest for the same slot." },
+  { t: "Van Gogh Museum · Sun 29 Nov", d: "Timed entry, one order for everyone." },
   { t: "Light Festival canal cruise · Mon 30 Nov", d: "Pick an after-dark departure." },
   { t: "Louvre timeslot · Fri 4 Dec", d: "Required even with the Museum Pass." },
   { t: "Sainte-Chapelle timeslot · Fri 4 Dec", d: "Book with the Museum Pass option." },
-  { t: "Eiffel Tower summit · Sat 5 Dec", d: "Summit by lift, three tickets in one order." },
+  { t: "Eiffel Tower summit · Sat 5 Dec", d: "Summit by lift, everyone in one order." },
   { t: "Notre-Dame free reservation · Fri 4 Dec", d: "Optional but skips the line." },
-  { t: "Dinner reservations · Fri, Sat & Sun in Paris", d: "Tables for three." },
+  { t: "Dinner reservations · Fri, Sat & Sun in Paris", d: "Book a table for the whole group." },
 ];
 
 /* ---------- Rendering ---------- */
 const usd = n => "$" + Math.round(n).toLocaleString("en-US");
-const eur = n => "€" + (Number.isInteger(n) ? n : n.toFixed(2).replace(/\.?0+$/, ""));
-const dayGroupEur = d => d.costs.reduce((s, c) => s + (c.group ? c.eur : c.eur * PEOPLE), 0);
+document.getElementById("fx").textContent = FX.toFixed(2);
 
-const daysEur = DAYS.reduce((s, d) => s + dayGroupEur(d), 0);
-const daysUsd = daysEur * FX;
-const bigUsd = BIG.reduce((s, b) => s + b.usd, 0);
-const total = bigUsd + daysUsd;
+// Traveler count comes from ?people=N so a shared link keeps the same number.
+const clamp = n => Math.min(MAX_PEOPLE, Math.max(MIN_PEOPLE, n));
+let people = clamp(parseInt(new URLSearchParams(location.search).get("people"), 10) || DEFAULT_PEOPLE);
 
-document.getElementById("tTotal").textContent = usd(total);
-document.getElementById("tTotalSub").textContent = "was $5,187 for two";
-document.getElementById("tEach").textContent = usd(total / PEOPLE);
-document.getElementById("tDaily").textContent = usd(daysUsd / PEOPLE);
-document.getElementById("fxNote").textContent = "€1 = $" + FX.toFixed(2) + ".";
-document.getElementById("aFlights2").textContent = usd(FLIGHTS_FIRST_TWO);
-document.getElementById("aFlight3").textContent = usd(FLIGHT_THIRD);
+function renderBudget() {
+  const n = people;
+  document.getElementById("nOut").textContent = n;
+  document.getElementById("minus").disabled = n <= MIN_PEOPLE;
+  document.getElementById("plus").disabled = n >= MAX_PEOPLE;
+  document.querySelectorAll(".nTravelers").forEach(el => el.textContent = plural(n, "traveler"));
 
-const rows = BIG.map(b => `
-  <tr><td>${b.label}${b.est ? '<span class="tag est">estimate</span>' : ""}<span class="note">${b.note}</span></td>
-  <td class="r num">${usd(b.usd)}</td><td class="r num">${usd(b.usd / PEOPLE)}</td></tr>`);
-rows.push(`
-  <tr><td>Day-to-day: tickets, transit, food<span class="note">${eur(daysEur)} across 10 days · see each day below</span></td>
-  <td class="r num">${usd(daysUsd)}</td><td class="r num">${usd(daysUsd / PEOPLE)}</td></tr>`);
-rows.push(`<tr class="total"><td>Total</td><td class="r num">${usd(total)}</td><td class="r num">${usd(total / PEOPLE)}</td></tr>`);
-document.getElementById("budgetRows").innerHTML = rows.join("");
+  const items = BIG.map(b => ({ label: b.label, note: b.note(n), usd: b.cost(n) }));
+  const total = items.reduce((s, b) => s + b.usd, 0);
+  document.getElementById("tTotal").textContent = usd(total);
+  document.getElementById("tEach").textContent = usd(total / n);
+  document.getElementById("budgetRows").innerHTML = items.map(b => `
+    <tr><td>${b.label}<span class="note">${b.note}</span></td>
+    <td class="r num">${usd(b.usd)}</td><td class="r num">${usd(b.usd / n)}</td></tr>`).join("") +
+    `<tr class="total"><td>Total</td><td class="r num">${usd(total)}</td><td class="r num">${usd(total / n)}</td></tr>`;
+}
 
-const cityName = { ams: "Amsterdam", par: "Paris", home: "Travel day" };
+function setPeople(n) {
+  people = clamp(n);
+  const url = new URL(location.href);
+  if (people === DEFAULT_PEOPLE) url.searchParams.delete("people"); else url.searchParams.set("people", people);
+  history.replaceState(null, "", url);
+  renderBudget();
+}
+document.getElementById("minus").addEventListener("click", () => setPeople(people - 1));
+document.getElementById("plus").addEventListener("click", () => setPeople(people + 1));
+renderBudget();
+
 document.getElementById("dayList").innerHTML = DAYS.map(d => {
   const dt = new Date(d.date + "T12:00:00");
   const dow = dt.toLocaleDateString("en-US", { weekday: "short" });
   const mon = dt.toLocaleDateString("en-US", { month: "short" });
-  const g = dayGroupEur(d);
-  const costRows = d.costs.map(c => {
-    const groupE = c.group ? c.eur : c.eur * PEOPLE;
-    const each = c.group ? "" : ` <span class="muted">(${eur(c.eur)} ea)</span>`;
-    return `<div class="row"><span>${c.label}${each}</span><span>${eur(groupE)}</span></div>`;
-  }).join("");
-  const costsBox = d.costs.length ? `
-    <div class="costs"><div class="hd">For three</div>${costRows}
-      <div class="row sum"><span>Day total</span><span>${eur(g)} · ${usd(g * FX)}</span></div></div>`
-    : `<div class="costs"><div class="hd">For three</div><div class="row"><span>No day costs</span><span>—</span></div></div>`;
   return `
   <article class="day ${d.city}" data-city="${d.city}">
     <div class="day-head">
       <div class="date"><div class="dow">${dow}</div><div class="dom">${dt.getDate()}</div><div class="mon">${mon}</div></div>
       <div class="day-title"><h3>${d.title}</h3><div class="city">${d.where}</div></div>
-      <div class="day-cost">${g ? `<b class="num">${usd(g * FX)}</b>for three` : ""}</div>
     </div>
     <div class="day-body">
       <ul class="plan">${d.plan.map(([w, t]) => `<li><span class="when">${w}</span><span>${t}</span></li>`).join("")}</ul>
-      ${costsBox}
       ${d.tip ? `<div class="tip">${d.tip}</div>` : ""}
     </div>
   </article>`;
@@ -475,7 +472,7 @@ let ticked = {};
 try { ticked = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { ticked = {}; }
 document.getElementById("checklist").innerHTML = BOOK.map((b, i) => `
   <li><label><input type="checkbox" data-i="${i}" ${ticked[b.t] ? "checked" : ""}>
-  <span><span class="t">${b.t}</span>${b.new3 ? '<span class="badge3">new · 3rd person</span>' : ""}<span class="d">${b.d}</span></span></label></li>`).join("");
+  <span><span class="t">${b.t}</span><span class="d">${b.d}</span></span></label></li>`).join("");
 document.getElementById("checklist").addEventListener("change", e => {
   const b = BOOK[e.target.dataset.i];
   if (!b) return;
