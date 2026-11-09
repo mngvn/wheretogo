@@ -1,0 +1,395 @@
+{
+  "checkedNote": "Prices and specs checked Nov 9, 2026. Confirm on the seller's page before buying.",
+  "buyingNotes": [
+    "Skip odd domains with huge discounts, like $45 Vessis or a $92.99 Cotopaxi Allpa. They look fake.",
+    "On Amazon, check recent reviews for rain comments. Some \"waterproof\" listings say \"Not Water Resistant\" in the specs.",
+    "Order shoes early enough to break them in and swap sizes before Nov 27."
+  ],
+  "linkLabels": {
+    "product": "View",
+    "listing": "Find it here",
+    "search": "Search on Amazon",
+    "review": "Read more"
+  },
+  "categories": [
+    {
+      "id": "backpacks",
+      "title": "Backpacks",
+      "badge": "fit",
+      "filter": { "label": "Fits carry-on", "field": "fit", "value": "Fits" },
+      "tips": [
+        "One travel backpack is the only luggage. No suitcase-style carry-on.",
+        "KLM / Air France cabin limit: 21.7 × 13.8 × 9.8 in (55 × 35 × 25 cm), 12 kg total.",
+        "Delta cabin limit: 22 × 14 × 9 in (56 × 35 × 23 cm).",
+        "Basic or Light fares may only allow a personal item, so check the ticket.",
+        "Aim for 35–40L for 10 days: comfortable to carry, with a look that works in a city."
+      ],
+      "legend": {
+        "Fits": "Within both size targets",
+        "Near": "Slightly over on one target, usually fine for a soft bag",
+        "Over": "Over a target on paper, measure before flying",
+        "Check": "Dimensions not confirmed"
+      },
+      "groups": [
+        {
+          "id": "main",
+          "title": "Main picks",
+          "items": [
+            {
+              "rank": 1, "name": "Osprey Farpoint 40", "highlight": "Top pick", "price": "$200",
+              "specs": ["40L", "21.7 × 13.8 × 9.1 in", "3 lb 6.4 oz", "Hip belt"],
+              "fit": "Near",
+              "note": "Most comfortable carry. 0.1 in deeper than Delta's limit on paper.",
+              "link": { "type": "product", "url": "https://www.rei.com/product/894562/osprey-farpoint-40-travel-pack-mens" },
+              "image": null
+            },
+            {
+              "rank": 2, "name": "Thule Aion 40L", "highlight": null, "price": "$209.95",
+              "specs": ["40L", "20.5 × 13 × 9 in", "3.2 lb"],
+              "fit": "Fits",
+              "note": "Most city-friendly look.",
+              "link": { "type": "product", "url": "https://www.rei.com/product/207403/thule-aion-travel-pack-40-l" },
+              "image": null
+            },
+            {
+              "rank": 3, "name": "The North Face Base Camp Voyager 35L", "highlight": null, "price": "$170",
+              "specs": ["35L", "19.3 × 12 × 6.3 in", "3.46 lb"],
+              "fit": "Fits",
+              "note": "Water-resistant fabric.",
+              "link": { "type": "product", "url": "https://www.rei.com/product/221521/the-north-face-base-camp-travel-pack" },
+              "image": null
+            },
+            {
+              "rank": 4, "name": "Peak Design Travel Backpack 30L", "highlight": null, "price": "$239.95",
+              "specs": ["27–33L", "20.9 × 13 × 7 in (7.9 in expanded)"],
+              "fit": "Fits",
+              "note": "Tight for 10 days.",
+              "link": { "type": "product", "url": "https://rei.com/product/243293/peak-design-travel-pack" },
+              "image": null
+            },
+            {
+              "rank": 5, "name": "KAVU Hauler Hills", "highlight": null, "price": "$150",
+              "specs": ["39L", "19.75 × 12 × 8 in", "2.25 lb"],
+              "fit": "Fits",
+              "note": "Light.",
+              "link": { "type": "listing", "url": "https://www.rei.com/c/travel-packs" },
+              "image": null
+            },
+            {
+              "rank": 6, "name": "Osprey Transporter Travel Pack 36", "highlight": null, "price": "$225",
+              "specs": ["36L"],
+              "fit": "Check",
+              "note": "REI's weather-resistant pick.",
+              "link": { "type": "product", "url": "https://www.rei.com/product/C04004/osprey-transporter-travel-pack-36" },
+              "image": null
+            },
+            {
+              "rank": 7, "name": "Osprey Daylite Carry-On 35", "highlight": null, "price": "$120",
+              "specs": ["35L", "19.3 × 14.6 × 10.2 in", "About 2 lb", "No hip belt"],
+              "fit": "Over",
+              "note": "Cheapest main pick. Over KLM width and depth on paper.",
+              "link": { "type": "product", "url": "https://www.rei.com/product/238104/osprey-daylite-carry-on-travel-pack-35" },
+              "image": null
+            },
+            {
+              "rank": 8, "name": "Patagonia Black Hole MLC 45L", "highlight": null, "price": "$239",
+              "specs": ["45L", "22 × 14.5 × 7.6 in", "Hip belt"],
+              "fit": "Over",
+              "note": "Slightly over on width.",
+              "extraLinks": [
+                { "label": "Also $191 at Sports Basement", "url": "https://shop.sportsbasement.com/products/black-hole-mlc-45l" }
+              ],
+              "link": { "type": "product", "url": "https://www.rei.com/product/208438/patagonia-black-hole-mlc-pack" },
+              "image": null
+            },
+            {
+              "rank": 9, "name": "Cotopaxi Allpa 35L", "highlight": null, "price": "$230",
+              "specs": ["35L", "22 × 12 × 10 in"],
+              "fit": "Over",
+              "note": "REI's favorite carry-on. Don't overstuff it.",
+              "link": { "type": "product", "url": "https://www.rei.com/product/168622/cotopaxi-allpa-35l-travel-pack" },
+              "image": null
+            },
+            {
+              "rank": 10, "name": "Peak Design Travel Backpack 45L", "highlight": null, "price": "Up to $319.95",
+              "specs": ["35–45L"],
+              "fit": "Check",
+              "note": "Carry-on size only in its compressed 35L form.",
+              "link": { "type": "product", "url": "https://rei.com/product/243293/peak-design-travel-pack" },
+              "image": null
+            }
+          ]
+        },
+        {
+          "id": "amazon",
+          "title": "Amazon budget picks",
+          "intro": "Ratings and most prices weren't visible on Amazon, so check the price on the listing.",
+          "items": [
+            {
+              "rank": 1, "name": "tomtoc Travel Backpack 40L", "highlight": "Top budget pick", "price": "$96 list",
+              "specs": ["40L", "21.5 × 14 × 9 in"],
+              "fit": "Near",
+              "note": "Amazon's Choice, 2K+ bought in the past month. OutdoorGearLab's Best Travel Backpack Under $100 (T-66). 0.2 in over KLM width.",
+              "link": { "type": "search", "url": "https://www.amazon.com/40-l-backpacks/s?k=40+l+backpacks" },
+              "image": null
+            },
+            {
+              "rank": 2, "name": "LOVEVOOK 40L", "highlight": null, "price": "Check price",
+              "specs": ["18 × 14 × 8 in", "2.2 lb", "3 packing cubes"],
+              "fit": "Near",
+              "note": "300+ bought in the past week. About 33L by its outer size. 0.2 in over KLM width.",
+              "link": { "type": "product", "url": "https://www.amazon.com/LOVEVOOK-Backpack-Airplanes-Waterproof-Essentials/dp/B0CJY9LHK4" },
+              "image": null
+            },
+            {
+              "rank": 3, "name": "Vancropak Expandable 40L", "highlight": null, "price": "Check price",
+              "specs": ["19 × 13 × 7 in", "2.6 lb", "3 packing cubes", "Shoe compartment"],
+              "fit": "Fits",
+              "note": "Free returns. About 28L by its outer size before expanding.",
+              "link": { "type": "product", "url": "https://www.amazon.com/Vancropak-Carry-Backpack-Men/dp/B0CY3Q4SG8" },
+              "image": null
+            },
+            {
+              "rank": 4, "name": "MATEIN Carry-On 40L", "highlight": null, "price": "About $32",
+              "specs": ["40L", "About 2.2 lb", "No hip belt"],
+              "fit": "Check",
+              "note": "Reported 4.7 stars across 13,000+ reviews, but BetterTrail scored it 2.3/5 for comfort and durability. Not ideal as an only bag.",
+              "link": { "type": "search", "url": "https://www.amazon.com/carry-on-travel-backpacks-30-40l/s?k=carry-on+travel+backpacks+30-40l" },
+              "image": null
+            },
+            {
+              "rank": 5, "name": "SWICKY 40L", "highlight": null, "price": "Check price",
+              "specs": ["20 × 13 × 8.8 in", "3.3 lb", "Opens 180°"],
+              "fit": "Fits",
+              "note": "200+ bought in the past week.",
+              "link": { "type": "product", "url": "https://www.amazon.com/SWICKY-Backpack-Quick-Access-Resistant-Weekender/dp/B0FJQGHJMC" },
+              "image": null
+            },
+            {
+              "rank": 6, "name": "UMGG 40L with rain cover", "highlight": null, "price": "Check price",
+              "specs": ["19.7 × 13.4 × 7.9 in", "Rain cover"],
+              "fit": "Fits",
+              "note": "Rain cover suits December.",
+              "link": { "type": "product", "url": "https://www.amazon.com/Backpack-Approved-Charging-Suitcase-Weekender/dp/B0DSHDJZFZ" },
+              "image": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "insurance",
+      "title": "Travel insurance",
+      "badge": "type",
+      "topLink": { "label": "Compare real quotes", "url": "https://www.squaremouth.com/resources/best-travel-insurance" },
+      "priceLabel": "Sample price",
+      "tips": [
+        "Check your credit card's trip coverage first. You may not need a separate plan.",
+        "Typical cost is 4–10% of prepaid, nonrefundable trip costs.",
+        "Medical-only plans are cheapest but don't refund a canceled trip.",
+        "Sample prices are NerdWallet's unless noted: a 7-day, $2,000 trip to Mexico for a 45-year-old, quoted April 2026. Use them to compare plans. Real quotes depend on age, dates and trip cost."
+      ],
+      "groups": [
+        {
+          "id": "plans",
+          "title": "Plans",
+          "items": [
+            {
+              "rank": 1, "name": "Travelex", "highlight": "Top pick", "price": "$63, Essential",
+              "specs": [], "type": "Comprehensive",
+              "note": "NerdWallet 5.0 and best overall.",
+              "link": { "type": "review", "url": "https://www.nerdwallet.com/travel/learn/travelex-travel-insurance-what-you-need-to-know" },
+              "image": null
+            },
+            {
+              "rank": 2, "name": "Berkshire Hathaway Travel Protection", "highlight": null, "price": "$52, ExactCare Value",
+              "specs": [], "type": "Comprehensive",
+              "note": "NerdWallet 4.5, cheapest price.",
+              "link": { "type": "review", "url": "https://www.nerdwallet.com/travel/learn/berkshire-hathaway-travel-insurance" },
+              "image": null
+            },
+            {
+              "rank": 3, "name": "Trawick International", "highlight": null, "price": "$56, Pathway Essential",
+              "specs": [], "type": "Comprehensive",
+              "note": "NerdWallet 5.0. Reports of slow resolutions.",
+              "link": { "type": "review", "url": "https://www.nerdwallet.com/travel/learn/trawick-international-review" },
+              "image": null
+            },
+            {
+              "rank": 4, "name": "Tin Leg", "highlight": null, "price": "$65, Economy",
+              "specs": [], "type": "Comprehensive",
+              "note": "NerdWallet 4.5. Claims can be slow.",
+              "link": { "type": "review", "url": "https://www.nerdwallet.com/travel/learn/tin-leg-travel-insurance-review" },
+              "image": null
+            },
+            {
+              "rank": 5, "name": "Aegis GoReady", "highlight": null, "price": "$69, Choice",
+              "specs": [], "type": "Comprehensive",
+              "note": "NerdWallet 5.0.",
+              "link": { "type": "review", "url": "https://www.nerdwallet.com/travel/learn/aegis-travel-insurance-review" },
+              "image": null
+            },
+            {
+              "rank": 6, "name": "Seven Corners", "highlight": null, "price": "$75, Trip Protection Basic",
+              "specs": [], "type": "Comprehensive",
+              "note": "NerdWallet 4.5.",
+              "link": { "type": "review", "url": "https://www.nerdwallet.com/travel/learn/seven-corners-travel-insurance-what-you-need-to-know" },
+              "image": null
+            },
+            {
+              "rank": 7, "name": "IMG", "highlight": null, "price": "$75, iTravelInsured Choice",
+              "specs": [], "type": "Comprehensive",
+              "note": "NerdWallet 4.5. Claims can be slow.",
+              "link": { "type": "review", "url": "https://www.nerdwallet.com/travel/learn/img-travel-insurance" },
+              "image": null
+            },
+            {
+              "rank": 8, "name": "Faye", "highlight": null, "price": "From $5.16/day on a 14-day trip (CNBC)",
+              "specs": [], "type": "Comprehensive",
+              "note": "App-based claims, $300 delay coverage after six hours.",
+              "link": { "type": "review", "url": "https://www.cnbc.com/select/best-travel-insurance-for-europe/" },
+              "image": null
+            },
+            {
+              "rank": 9, "name": "Heymondo", "highlight": null, "price": "Get a quote",
+              "specs": [], "type": "Comprehensive or medical-only",
+              "note": "Up to $200,000 medical and $500,000 evacuation on Premium.",
+              "link": { "type": "review", "url": "https://hellosafe.com/travel-insurance/heymondo" },
+              "image": null
+            },
+            {
+              "rank": 10, "name": "WorldSecure Basic", "highlight": null, "price": "$97.78 for a couple, 12-day Europe trip (HelloSafe)",
+              "specs": [], "type": "Medical-only",
+              "note": "Under 40 only. No trip cancellation.",
+              "link": { "type": "review", "url": "https://hellosafe.com/travel-insurance/to-europe" },
+              "image": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shoes",
+      "title": "Shoes",
+      "badge": "waterproof",
+      "filter": { "label": "Waterproof only", "field": "waterproof", "value": true },
+      "tips": [
+        "Men's. Stylish, comfortable for a lot of walking, affordable.",
+        "Waterproof preferred: December averages about 12–13 rain days, with highs around 43–45°F.",
+        "Order early enough to break them in. Black Friday is the day we leave, so don't wait for it."
+      ],
+      "groups": [
+        {
+          "id": "main",
+          "title": "Main picks",
+          "items": [
+            {
+              "rank": 1, "name": "Merrell Nova 4 Waterproof", "highlight": "Top pick", "price": "$119.99 (was $160)",
+              "specs": [], "waterproof": true,
+              "note": "Clean design for beyond the trail.",
+              "link": { "type": "product", "url": "https://www.merrell.com/US/en/nova-4-waterproof/60177M.html" },
+              "image": null
+            },
+            {
+              "rank": 2, "name": "Merrell Jungle Moc Nubuck Waterproof", "highlight": null, "price": "$135",
+              "specs": ["Slip-on"], "waterproof": true,
+              "note": "4.6 stars across 907 REI reviews.",
+              "link": { "type": "product", "url": "https://www.merrell.com/US/default/jungle-moc-nubuck-waterproof/16954M.html" },
+              "image": null
+            },
+            {
+              "rank": 3, "name": "Vessi Weekend Classic", "highlight": null, "price": "$145",
+              "specs": [], "waterproof": true,
+              "note": "Waterproof knit.",
+              "link": { "type": "product", "url": "https://vessi.com/products/mens-weekend-marble-white" },
+              "image": null
+            },
+            {
+              "rank": 4, "name": "Hoka Clifton 9 GTX", "highlight": null, "price": "$131.95 (was $164.99)",
+              "specs": ["Gore-Tex"], "waterproof": true,
+              "note": "Most cushioned, most running-shoe look.",
+              "link": { "type": "listing", "url": "https://www.marathonsports.com/shop/mens/hoka/shoes/hoka-clifton" },
+              "image": null
+            },
+            {
+              "rank": 5, "name": "Salomon XT-EVR Gore-Tex", "highlight": null, "price": "€129.95",
+              "specs": ["Gore-Tex"], "waterproof": true,
+              "note": "Best style. Only EU pricing found.",
+              "link": { "type": "listing", "url": "https://www.bergfreunde.eu/sneakers/properties--gore-tex/" },
+              "image": null
+            },
+            {
+              "rank": 6, "name": "On Cloud 6 Waterproof", "highlight": null, "price": "$179.95",
+              "specs": [], "waterproof": true,
+              "note": "Priciest sneaker here.",
+              "link": { "type": "product", "url": "https://www.fit2run.com/products/on-cloud-6-waterproof-mens" },
+              "image": null
+            },
+            {
+              "rank": 7, "name": "Vans MTE Standard Mid Chelsea Waterproof", "highlight": null, "price": "$105",
+              "specs": ["Mid-height Chelsea"], "waterproof": true,
+              "note": "Only 3 stars from 4 reviews.",
+              "link": { "type": "listing", "url": "https://www.zappos.com/men/OgTQE-YVagECegLUBIIBAp8YwAEC4gIFGAcHDw0.zso" },
+              "image": null
+            },
+            {
+              "rank": 8, "name": "ECCO Soft 7 City Sneaker", "highlight": null, "price": "$119.99 (was $170)",
+              "specs": [], "waterproof": false,
+              "note": "Sleekest option.",
+              "link": { "type": "listing", "url": "https://www.zappos.com/men/OgSIKtQKegLTBIIBAo8WwAEC4gIEGAcHDw.zso" },
+              "image": null
+            },
+            {
+              "rank": 9, "name": "New Balance 574", "highlight": null, "price": "$89.99",
+              "specs": [], "waterproof": false,
+              "note": "Cheapest main pick.",
+              "link": { "type": "listing", "url": "https://www.llbean.com/llb/shop/506791" },
+              "image": null
+            },
+            {
+              "rank": 10, "name": "Blundstone 500", "highlight": null, "price": "$209.95",
+              "specs": ["Chelsea boot"], "waterproof": false,
+              "note": "Over budget. The waterproof version is a separate model.",
+              "link": { "type": "listing", "url": "https://www.zappos.com/men-shoes/CK_XAToGlg-aDe4TwAEC4gIFARgHBwc.zso" },
+              "image": null
+            }
+          ]
+        },
+        {
+          "id": "amazon",
+          "title": "Amazon budget picks",
+          "items": [
+            {
+              "rank": 1, "name": "Skechers Delson-Antigo", "highlight": "Top budget pick", "price": "Check price, similar listing from $36.65",
+              "specs": ["Leather", "Memory foam"], "waterproof": true,
+              "note": "4.4 stars across 670+ ratings. Casual dress look.",
+              "link": { "type": "product", "url": "https://www.amazon.com/Skechers-65693-Mens-Delson-Antigo-Oxford/dp/B0BC6KGFK7" },
+              "image": null
+            },
+            {
+              "rank": 2, "name": "SOREL Metro II Low", "highlight": null, "price": "Check price",
+              "specs": ["Waterproof leather"], "waterproof": true,
+              "note": "Street sneaker, best-looking here. May not be the cheapest.",
+              "link": { "type": "product", "url": "https://www.amazon.com/SOREL-Mens-Metro-Waterproof-Sneaker/dp/B0DR5V88GT" },
+              "image": null
+            },
+            {
+              "rank": 3, "name": "Columbia Crestwood Waterproof", "highlight": null, "price": "Check price",
+              "specs": [], "waterproof": true,
+              "note": "100+ bought in the past week. Looks like a hiking shoe.",
+              "link": { "type": "search", "url": "https://www.amazon.com/columbia-crestwood/s?k=columbia+crestwood" },
+              "image": null
+            },
+            {
+              "rank": 4, "name": "NORTIV 8 Low Waterproof", "highlight": null, "price": "Check price",
+              "specs": [], "waterproof": true,
+              "note": "4.2 stars across 4,210 ratings. Reviews are mixed on waterproofing.",
+              "link": { "type": "search", "url": "https://www.amazon.com/Waterproof-Casual-Shoes/s?k=Waterproof+Casual+Shoes" },
+              "image": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

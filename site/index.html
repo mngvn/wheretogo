@@ -9,159 +9,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #f7f3ec;
-    --surface: #fffdf9;
-    --surface-2: #f0ebe2;
-    --text: #1f1d1a;
-    --muted: #6b655c;
-    --line: #e2dbcf;
-    --ams: #d9622b;
-    --ams-soft: #fbe8dd;
-    --par: #2f4a8a;
-    --par-soft: #e2e8f6;
-    --home: #5b6b5d;
-    --home-soft: #e5ebe4;
-    --accent: #1f1d1a;
-    --ok: #2f7a4f;
-    --warn-bg: #fff4d6;
-    --warn-line: #ecd48a;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #161513;
-      --surface: #1f1e1b;
-      --surface-2: #292723;
-      --text: #f1ece3;
-      --muted: #a69f93;
-      --line: #36332e;
-      --ams: #f08a55;
-      --ams-soft: #3a261c;
-      --par: #8ea8ec;
-      --par-soft: #1f2840;
-      --home: #a5b8a7;
-      --home-soft: #232a24;
-      --accent: #f1ece3;
-      --ok: #6fc794;
-      --warn-bg: #2f2918;
-      --warn-line: #5d4f22;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #161513; --surface: #1f1e1b; --surface-2: #292723; --text: #f1ece3; --muted: #a69f93;
-    --line: #36332e; --ams: #f08a55; --ams-soft: #3a261c; --par: #8ea8ec; --par-soft: #1f2840;
-    --home: #a5b8a7; --home-soft: #232a24; --accent: #f1ece3; --ok: #6fc794; --warn-bg: #2f2918; --warn-line: #5d4f22;
-  }
-
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font: 16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  }
-  a { color: inherit; text-underline-offset: 3px; }
-  h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 700; line-height: 1.15; margin: 0; }
-  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
-  .num { font-variant-numeric: tabular-nums; }
-  .muted { color: var(--muted); }
-
-  /* Hero */
-  header.hero { padding: 48px 0 28px; }
-  .eyebrow { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-  .hero h1 { font-size: clamp(40px, 9vw, 72px); margin: 8px 0 24px; letter-spacing: -.01em; }
-  .route { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; row-gap: 10px; }
-  .stop { display: flex; flex-direction: column; padding: 10px 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); min-width: 0; }
-  .stop b { font-family: Fraunces, Georgia, serif; font-size: 22px; }
-  .stop span { font-size: 13px; color: var(--muted); }
-  .stop.ams { background: var(--ams-soft); border-color: transparent; }
-  .stop.ams b { color: var(--ams); }
-  .stop.par { background: var(--par-soft); border-color: transparent; }
-  .stop.par b { color: var(--par); }
-  .leg { display: flex; align-items: center; padding: 0 8px; font-size: 12px; color: var(--muted); font-style: italic; text-align: center; max-width: 92px; line-height: 1.25; }
-
-  /* Traveler picker */
-  .picker { margin: 8px 0 28px; padding: 14px 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  .picker .q { font-weight: 600; }
-  .picker .q small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
-  .stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-2); }
-  .stepper button { font: inherit; font-size: 22px; line-height: 1; width: 44px; height: 44px; border: 0; background: none; color: var(--text); cursor: pointer; border-radius: 999px; }
-  .stepper button:disabled { opacity: .3; cursor: default; }
-  .stepper button:not(:disabled):hover { background: var(--line); }
-  .stepper output { min-width: 56px; text-align: center; font-family: Fraunces, Georgia, serif; font-size: 26px; font-weight: 700; }
-
-  /* Sections */
-  section { padding: 28px 0; border-top: 1px solid var(--line); }
-  section > h2 { font-size: 28px; margin-bottom: 6px; }
-  section > .lede { color: var(--muted); margin: 0 0 18px; }
-
-  /* Budget */
-  .totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 16px 0 20px; }
-  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
-  .tile .label { font-size: 13px; color: var(--muted); }
-  .tile .value { font-family: Fraunces, Georgia, serif; font-size: 36px; font-weight: 700; margin-top: 2px; }
-  .tile .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
-  .tile.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-  .tile.primary .label, .tile.primary .sub { color: inherit; opacity: .75; }
-
-  table { width: 100%; border-collapse: collapse; font-size: 15px; }
-  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
-  td.r, th.r { text-align: right; white-space: nowrap; }
-  td .note { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
-  tr.total td { font-weight: 600; border-bottom: 0; }
-  .table-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px 8px; overflow-x: auto; }
-
-  /* Days */
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-  .filters button { font: inherit; font-size: 14px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); cursor: pointer; }
-  .filters button[aria-pressed="true"] { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-  .days { display: grid; gap: 14px; }
-  .day { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
-  .day-head { display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center; padding: 14px 16px; }
-  .date { text-align: center; border-radius: 12px; padding: 6px 0; background: var(--surface-2); }
-  .date .dow { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; color: var(--muted); }
-  .date .dom { font-family: Fraunces, Georgia, serif; font-size: 26px; font-weight: 700; line-height: 1.05; }
-  .date .mon { font-size: 11px; color: var(--muted); }
-  .day.ams .date { background: var(--ams-soft); } .day.ams .date .dom { color: var(--ams); }
-  .day.par .date { background: var(--par-soft); } .day.par .date .dom { color: var(--par); }
-  .day.home .date { background: var(--home-soft); } .day.home .date .dom { color: var(--home); }
-  .day-title h3 { font-size: 20px; }
-  .day-title .city { font-size: 13px; color: var(--muted); }
-  .day-body { padding: 0 16px 16px; display: grid; gap: 14px; }
-  .plan { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-  .plan li { display: grid; grid-template-columns: 84px 1fr; gap: 10px; }
-  .plan .when { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; color: var(--muted); padding-top: 2px; }
-  .tip { font-size: 14px; border-left: 3px solid var(--line); padding-left: 10px; color: var(--muted); }
-  .day.ams .tip { border-color: var(--ams); } .day.par .tip { border-color: var(--par); }
-
-  /* Checklist */
-  .checklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
-  .checklist label { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; }
-  .checklist input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--ok); }
-  .checklist .t { font-weight: 600; }
-  .checklist .d { display: block; font-size: 14px; color: var(--muted); }
-  .checklist input:checked + span .t { text-decoration: line-through; color: var(--muted); }
-
-  ul.plain { padding-left: 20px; margin: 0; }
-  ul.plain li { margin: 6px 0; }
-  footer { padding: 28px 0 56px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
-  .theme-btn { position: fixed; top: 12px; right: 12px; font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); cursor: pointer; }
-
-  @media (max-width: 520px) {
-    .leg { max-width: 64px; font-size: 11px; padding: 0 4px; }
-    .stop { padding: 8px 10px; }
-    .stop b { font-size: 18px; }
-    .day-head { grid-template-columns: 56px 1fr; }
-    .plan li { grid-template-columns: 1fr; gap: 0; }
-    th, td { padding: 9px 6px; }
-  }
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">◐</button>
+
+<nav class="pagetabs" aria-label="Pages">
+  <div class="wrap">
+    <a href="./" aria-current="page">Itinerary</a>
+    <a href="gear.html">Gear &amp; Insurance</a>
+  </div>
+</nav>
 
 <div class="wrap">
   <header class="hero">
@@ -479,15 +337,7 @@ document.getElementById("checklist").addEventListener("change", e => {
   ticked[b.t] = e.target.checked;
   try { localStorage.setItem(KEY, JSON.stringify(ticked)); } catch (err) {}
 });
-
-// Theme toggle
-const root = document.documentElement;
-try { const t = localStorage.getItem("theme"); if (t) root.dataset.theme = t; } catch (e) {}
-document.getElementById("themeBtn").addEventListener("click", () => {
-  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-  root.dataset.theme = dark ? "light" : "dark";
-  try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
-});
 </script>
+<script src="theme.js"></script>
 </body>
 </html>

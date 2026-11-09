@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gear &amp; Insurance</title>
+<meta name="description" content="Backpacks, travel insurance and shoes for the Amsterdam & Paris trip">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">◐</button>
+
+<nav class="pagetabs" aria-label="Pages">
+  <div class="wrap">
+    <a href="./">Itinerary</a>
+    <a href="gear.html" aria-current="page">Gear &amp; Insurance</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Nov 27 – Dec 7, 2026 · Amsterdam &amp; Paris</div>
+    <h1>Gear &amp; Insurance</h1>
+  </header>
+
+  <p class="checked" id="checkedNote"></p>
+
+  <div class="cattabs" role="tablist" aria-label="Categories" id="catTabs"></div>
+  <div id="panel" role="tabpanel"></div>
+
+  <div class="notes-box">
+    <h2>Buying notes</h2>
+    <ul class="plain" id="buyingNotes"></ul>
+  </div>
+
+  <footer>
+    Options live in <code>data/gear.json</code>. "Bought" ticks are saved in your own browser only.
+  </footer>
+</div>
+
+<script>
+const BOUGHT_KEY = "ams-par-2026-gear-bought";
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = u => /^https:\/\//i.test(u || "") ? u : "#";
+const extLink = (url, label, cls) =>
+  `<a class="${cls}" href="${esc(safeUrl(url))}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`;
+
+const ICONS = {
+  backpacks: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5V4a3 3 0 0 1 6 0v1"/><rect x="5" y="5" width="14" height="16" rx="4"/><path d="M8 13h8v4H8z"/></svg>',
+  insurance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+  shoes: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16V9l4 1 3 3 5 1 4 1a2 2 0 0 1 2 2v1H3z"/><path d="M3 19h18"/></svg>',
+};
+
+const FIT_CLASS = { Fits: "good", Near: "amber", Over: "bad", Check: "" };
+const FIT_TEXT = { Fits: "Fits carry-on", Near: "Near carry-on size", Over: "Over carry-on size", Check: "Check size" };
+
+let bought = {};
+try { bought = JSON.parse(localStorage.getItem(BOUGHT_KEY)) || {}; } catch (e) { bought = {}; }
+const saveBought = () => { try { localStorage.setItem(BOUGHT_KEY, JSON.stringify(bought)); } catch (e) {} };
+
+let DATA = null;
+let current = null;
+const filterOn = {};
+
+function badgeFor(cat, item) {
+  if (cat.badge === "fit" && item.fit) {
+    const legend = (cat.legend || {})[item.fit] || "";
+    return `<span class="badge ${FIT_CLASS[item.fit] || ""}" title="${esc(legend)}">${esc(FIT_TEXT[item.fit] || item.fit)}</span>`;
+  }
+  if (cat.badge === "waterproof" && typeof item.waterproof === "boolean") {
+    return item.waterproof ? '<span class="badge info">Waterproof</span>' : '<span class="badge">Not waterproof</span>';
+  }
+  if (cat.badge === "type" && item.type) {
+    return `<span class="badge ${/medical/i.test(item.type) && !/comprehensive/i.test(item.type) ? "amber" : "info"}">${esc(item.type)}</span>`;
+  }
+  return "";
+}
+
+function card(cat, group, item) {
+  const id = `${cat.id}/${group.id}/${item.name}`;
+  const isBought = !!bought[id];
+  const thumb = item.image
+    ? `<img src="${esc(item.image)}" alt="${esc(item.name)}" loading="lazy">`
+    : `${ICONS[cat.id] || ""}`;
+  const specs = (item.specs || []).length
+    ? `<ul class="specs">${item.specs.map(s => `<li>${esc(s)}</li>`).join("")}</ul>` : "";
+  const extra = (item.extraLinks || []).map(l => `<div class="extra">${extLink(l.url, l.label + " ↗", "")}</div>`).join("");
+  const label = DATA.linkLabels[item.link.type] || "View";
+  return `
+  <article class="card${item.highlight ? " top" : ""}${isBought ? " bought" : ""}" data-id="${esc(id)}">
+    ${item.highlight ? `<span class="ribbon">★ ${esc(item.highlight)}</span>` : ""}
+    <div class="card-top">
+      <div class="thumb"${item.image ? "" : ' aria-label="No photo yet"'}>${thumb}</div>
+      <div>
+        <div class="rank">#${esc(item.rank)}</div>
+        <h4>${esc(item.name)}</h4>
+        <div class="price">${cat.priceLabel ? `<small>${esc(cat.priceLabel)}</small>` : ""}${esc(item.price)}</div>
+      </div>
+    </div>
+    <div class="badges">${badgeFor(cat, item)}</div>
+    ${specs}
+    <p class="note">${esc(item.note)}</p>
+    ${extra}
+    <div class="card-foot">
+      ${extLink(item.link.url, label + " ↗", "btn-link")}
+      <label class="bought-toggle"><input type="checkbox" data-bought="${esc(id)}" ${isBought ? "checked" : ""}> Bought</label>
+    </div>
+  </article>`;
+}
+
+function renderPanel() {
+  const cat = DATA.categories.find(c => c.id === current);
+  document.querySelectorAll("#catTabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.cat === current));
+
+  const f = cat.filter;
+  const passes = item => !f || !filterOn[cat.id] || item[f.field] === f.value;
+  const all = cat.groups.flatMap(g => g.items);
+  const shown = all.filter(passes).length;
+
+  const legend = cat.legend
+    ? `<dl>${Object.entries(cat.legend).map(([k, v]) =>
+        `<dt><span class="badge ${FIT_CLASS[k] || ""}">${esc(FIT_TEXT[k] || k)}</span></dt><dd>${esc(v)}</dd>`).join("")}</dl>` : "";
+  const criteria = `
+    <details class="criteria">
+      <summary>What we're looking for</summary>
+      <ul>${(cat.tips || []).map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+      ${legend}
+    </details>`;
+
+  const toolbar = `
+    <div class="toolbar">
+      ${cat.topLink ? extLink(cat.topLink.url, cat.topLink.label + " ↗", "btn-link") : ""}
+      ${f ? `<label class="chip-toggle"><input type="checkbox" id="catFilter" ${filterOn[cat.id] ? "checked" : ""}> ${esc(f.label)}</label>` : ""}
+      ${f && filterOn[cat.id] ? `<span class="count">${shown} of ${all.length} shown</span>` : ""}
+    </div>`;
+
+  const groups = cat.groups.map(g => {
+    const items = g.items.filter(passes);
+    const heading = cat.groups.length > 1 ? `<h3>${esc(g.title)}</h3>` : "";
+    return `
+    <div class="group">
+      ${heading}
+      ${g.intro ? `<p class="intro">${esc(g.intro)}</p>` : ""}
+      ${items.length
+        ? `<div class="cards">${items.map(it => card(cat, g, it)).join("")}</div>`
+        : `<p class="empty">Nothing here matches "${esc(f.label)}".</p>`}
+    </div>`;
+  }).join("");
+
+  document.getElementById("panel").innerHTML = criteria + toolbar + groups;
+  document.getElementById("panel").setAttribute("aria-labelledby", "tab-" + cat.id);
+  const fi = document.getElementById("catFilter");
+  if (fi) fi.addEventListener("change", () => { filterOn[cat.id] = fi.checked; renderPanel(); });
+}
+
+function selectCat(id, push) {
+  if (!DATA.categories.some(c => c.id === id)) id = DATA.categories[0].id;
+  current = id;
+  if (push) history.replaceState(null, "", "#" + id);
+  renderPanel();
+}
+
+document.getElementById("panel").addEventListener("change", e => {
+  const id = e.target.dataset && e.target.dataset.bought;
+  if (!id) return;
+  if (e.target.checked) bought[id] = true; else delete bought[id];
+  saveBought();
+  e.target.closest(".card").classList.toggle("bought", e.target.checked);
+});
+
+fetch("data/gear.json")
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(data => {
+    DATA = data;
+    document.getElementById("checkedNote").textContent = data.checkedNote;
+    document.getElementById("buyingNotes").innerHTML = data.buyingNotes.map(n => `<li>${esc(n)}</li>`).join("");
+    const tabs = document.getElementById("catTabs");
+    tabs.innerHTML = data.categories.map(c =>
+      `<button type="button" role="tab" id="tab-${esc(c.id)}" data-cat="${esc(c.id)}" aria-selected="false">${esc(c.title)}</button>`).join("");
+    tabs.addEventListener("click", e => {
+      const b = e.target.closest("button[data-cat]");
+      if (b) { selectCat(b.dataset.cat, true); }
+    });
+    selectCat(location.hash.slice(1), false);
+  })
+  .catch(() => {
+    document.getElementById("panel").innerHTML = '<p class="empty">Couldn\'t load the gear list. Try refreshing the page.</p>';
+  });
+</script>
+<script src="theme.js"></script>
+</body>
+</html>
