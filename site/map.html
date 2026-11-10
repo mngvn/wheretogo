@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paris Map</title>
+<meta name="description" content="Walking and metro routes from our Paris Airbnb at 130 Rue de Turenne, plus cafés and shops nearby">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="map-page">
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">◐</button>
+
+<nav class="pagetabs" aria-label="Pages">
+  <div class="wrap">
+    <a href="./">Itinerary</a>
+    <a href="map.html" aria-current="page">Paris Map</a>
+    <a href="gear.html">Gear &amp; Insurance</a>
+  </div>
+</nav>
+
+<div class="mapapp">
+  <div id="map" aria-label="Map of Paris around our Airbnb"></div>
+
+  <aside class="mpanel">
+    <div class="mpanel-head">
+      <div class="eyebrow">Paris · Dec 2 – 7</div>
+      <h1>130 Rue de Turenne</h1>
+      <p class="muted">Our Airbnb in the Haut-Marais (3rd). The nearest metro is Filles du Calvaire, line 8, 4 minutes away. Tap a sight for its walking and metro route, or Nearby for cafés and shops on the block.</p>
+    </div>
+    <div class="mtabs" role="tablist" aria-label="Map views">
+      <button type="button" role="tab" id="tab-sights" aria-selected="true" data-view="sights">Sights &amp; routes</button>
+      <button type="button" role="tab" id="tab-nearby" aria-selected="false" data-view="nearby">Nearby</button>
+    </div>
+
+    <div id="view-sights" role="tabpanel" aria-labelledby="tab-sights"></div>
+
+    <div id="view-nearby" role="tabpanel" aria-labelledby="tab-nearby" hidden>
+      <input type="search" id="placeSearch" class="msearch" placeholder="Search nearby places" aria-label="Search nearby places">
+      <div class="chips" id="chips"></div>
+      <p class="count" id="placeCount"></p>
+      <ul class="plist" id="placeList"></ul>
+    </div>
+
+    <p class="mfoot" id="attrib"></p>
+  </aside>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+const WALK_M_PER_MIN = 80;   // ~4.8 km/h
+const STOP_MIN = 1.8, TRANSFER_MIN = 4, WAIT_MIN = 3;
+const GROUPS = {
+  coffee:   { label: "Coffee",      icon: "☕", on: true },
+  bakery:   { label: "Bakeries",    icon: "🥐", on: true },
+  grocery:  { label: "Groceries",   icon: "🛒", on: true },
+  shops:    { label: "Shops",       icon: "🛍️", on: true },
+  pharmacy: { label: "Pharmacy",    icon: "💊", on: true },
+  money:    { label: "ATM",         icon: "🏧", on: true },
+  food:     { label: "Restaurants", icon: "🍽️", on: false },
+  bars:     { label: "Bars",        icon: "🍷", on: false },
+};
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const walkMin = m => Math.max(1, Math.round(m / WALK_M_PER_MIN));
+const km = m => m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1)} km`;
+const gmaps = (lat, lon, mode, home) =>
+  `https://www.google.com/maps/dir/?api=1&origin=${home.lat},${home.lon}&destination=${lat},${lon}&travelmode=${mode}`;
+const lineBadge = (line, color) => `<span class="mline" style="--c:${color}">${esc(line)}</span>`;
+
+function metroMinutes(m) {
+  const rideMin = m.rides.reduce((s, r) => s + (r.stops.length - 1) * STOP_MIN, 0);
+  return Math.round(walkMin(m.walkTo.m) + WAIT_MIN + rideMin + (m.rides.length - 1) * TRANSFER_MIN + walkMin(m.walkFrom.m));
+}
+
+let D, map, routeLayer, sightLayer, placeLayers = {}, homeMarker, radiusCircle;
+let selected = null, mode = null, view = "sights";
+
+fetch("data/paris-map.json")
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(init)
+  .catch(() => {
+    document.getElementById("view-sights").innerHTML = '<p class="empty">Couldn\'t load the map data. Try refreshing the page.</p>';
+  });
+
+function init(data) {
+  D = data;
+  const home = D.home;
+  document.getElementById("attrib").textContent = D.attribution + " Satellite imagery © Esri. Metro lines are drawn station to station, so they're approximate.";
+
+  map = L.map("map", { zoomControl: true, maxZoom: 20 }).setView([home.lat, home.lon], 14);
+  // Road and place labels only at overview zooms; up close the photo speaks for itself.
+  const satellite = L.layerGroup([
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      { maxNativeZoom: 19, maxZoom: 20, attribution: "Imagery © Esri, Maxar, Earthstar Geographics" }),
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",
+      { minZoom: 12, maxZoom: 16, opacity: 0.55 }),
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
+      { maxZoom: 15 }),
+  ]).addTo(map);
+  const streets = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    { maxNativeZoom: 19, maxZoom: 20, attribution: "© OpenStreetMap contributors" });
+
+  const LayerToggle = L.Control.extend({
+    options: { position: "topright" },
+    onAdd() {
+      const b = L.DomUtil.create("button", "map-btn map-btn-wide");
+      b.type = "button";
+      const label = () => { b.textContent = map.hasLayer(satellite) ? "🗺️ Street map" : "🛰️ Satellite"; };
+      label();
+      L.DomEvent.on(b, "click", e => {
+        L.DomEvent.stop(e);
+        if (map.hasLayer(satellite)) { map.removeLayer(satellite); streets.addTo(map); }
+        else { map.removeLayer(streets); satellite.addTo(map); }
+        label();
+      });
+      return b;
+    },
+  });
+  map.addControl(new LayerToggle());
+
+  const HomeControl = L.Control.extend({
+    options: { position: "topleft" },
+    onAdd() {
+      const b = L.DomUtil.create("button", "map-btn");
+      b.type = "button"; b.title = "Back to the Airbnb"; b.setAttribute("aria-label", "Back to the Airbnb"); b.textContent = "🏠";
+      L.DomEvent.on(b, "click", e => { L.DomEvent.stop(e); map.flyTo([home.lat, home.lon], 18); homeMarker.openPopup(); });
+      return b;
+    },
+  });
+  map.addControl(new HomeControl());
+
+  radiusCircle = L.circle([home.lat, home.lon], { radius: D.radius, color: "#fff", weight: 2, dashArray: "6 6", fillOpacity: 0.04, interactive: false }).addTo(map);
+  homeMarker = L.marker([home.lat, home.lon], {
+    icon: L.divIcon({ className: "", html: '<div class="pin pin-home">🏠</div>', iconSize: [44, 52], iconAnchor: [22, 52], popupAnchor: [0, -48] }),
+    zIndexOffset: 1000, title: home.name,
+  }).addTo(map).bindPopup(`<b>${esc(home.name)}</b><br>${esc(home.address)}<br><span class="muted">Metro: Filles du Calvaire (line 8), 4 min</span>`);
+
+  routeLayer = L.layerGroup().addTo(map);
+  sightLayer = L.layerGroup().addTo(map);
+  D.sights.forEach(s => {
+    L.marker([s.lat, s.lon], {
+      icon: L.divIcon({ className: "", html: `<div class="pin pin-sight">${s.icon}</div>`, iconSize: [36, 44], iconAnchor: [18, 44], popupAnchor: [0, -40] }),
+      title: s.name, riseOnHover: true,
+    }).addTo(sightLayer).on("click", () => { showView("sights"); select(s.id, null, true); });
+  });
+
+  Object.keys(GROUPS).forEach(g => { placeLayers[g] = L.layerGroup(); if (GROUPS[g].on) placeLayers[g].addTo(map); });
+  D.places.forEach((p, i) => {
+    const mk = L.marker([p.lat, p.lon], {
+      icon: L.divIcon({ className: "", html: `<div class="dot dot-${p.g}">${GROUPS[p.g].icon}</div>`, iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -11] }),
+      title: p.name, riseOnHover: true,
+    }).bindPopup(() => placePopup(p), { maxWidth: 260 });
+    mk.addTo(placeLayers[p.g]);
+    p._marker = mk; p._i = i;
+  });
+  const syncZoomClass = () => document.getElementById("map").classList.toggle("far", map.getZoom() < 16);
+  map.on("zoomend", syncZoomClass);
+
+  renderSights();
+  renderChips();
+  renderPlaces();
+
+  document.querySelectorAll(".mtabs button").forEach(b => b.addEventListener("click", () => showView(b.dataset.view, true)));
+  document.getElementById("placeSearch").addEventListener("input", renderPlaces);
+
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.get("view") === "nearby") showView("nearby", true);
+  else if (h.get("sight") && D.sights.some(s => s.id === h.get("sight"))) select(h.get("sight"), h.get("mode"), false);
+  else fitSights();
+  syncZoomClass();
+}
+
+function fitSights() {
+  const pts = D.sights.map(s => [s.lat, s.lon]).concat([[D.home.lat, D.home.lon]]);
+  map.fitBounds(pts, { padding: [24, 24] });
+}
+
+function setHash() {
+  const p = new URLSearchParams();
+  if (view === "nearby") p.set("view", "nearby");
+  else if (selected) { p.set("sight", selected); if (mode) p.set("mode", mode); }
+  history.replaceState(null, "", p.toString() ? "#" + p.toString() : location.pathname);
+}
+
+function showView(v, moveMap) {
+  view = v;
+  document.querySelectorAll(".mtabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.view === v));
+  document.getElementById("view-sights").hidden = v !== "sights";
+  document.getElementById("view-nearby").hidden = v !== "nearby";
+  if (moveMap && v === "nearby") { routeLayer.clearLayers(); map.flyTo([D.home.lat, D.home.lon], 17); }
+  if (moveMap && v === "sights") { selected ? drawRoute() : fitSights(); }
+  setHash();
+}
+
+/* ---------- Sights ---------- */
+function groupOf(s) {
+  if (s.walk.m <= 1100) return 0;
+  if (s.walk.m <= 2700) return 1;
+  return 2;
+}
+const GROUP_TITLES = ["Around the corner", "Walkable · 15–35 min", "Take the metro"];
+
+function renderSights() {
+  const box = document.getElementById("view-sights");
+  const byGroup = [[], [], []];
+  D.sights.forEach(s => byGroup[groupOf(s)].push(s));
+  byGroup.forEach(g => g.sort((a, b) => a.walk.m - b.walk.m));
+  box.innerHTML = byGroup.map((list, gi) => `
+    <h2 class="sgroup">${GROUP_TITLES[gi]}</h2>
+    ${list.map(sightCard).join("")}`).join("");
+  box.addEventListener("click", e => {
+    const head = e.target.closest("[data-select]");
+    const modeBtn = e.target.closest("[data-mode]");
+    if (modeBtn) { select(modeBtn.closest(".scard").dataset.id, modeBtn.dataset.mode, true); return; }
+    if (head) {
+      const id = head.closest(".scard").dataset.id;
+      if (selected === id) { selected = null; mode = null; routeLayer.clearLayers(); refreshCards(); fitSights(); setHash(); }
+      else select(id, null, true);
+    }
+  });
+}
+
+function sightCard(s) {
+  const w = `🚶 ${walkMin(s.walk.m)} min · ${km(s.walk.m)}`;
+  const m = s.metro ? ` <span class="sep">·</span> 🚇 ${metroMinutes(s.metro)} min ${s.metro.rides.map(r => lineBadge(r.line, D.lines[r.line])).join("")}` : "";
+  return `
+  <article class="scard" data-id="${s.id}">
+    <button type="button" class="shead" data-select aria-expanded="false">
+      <span class="sicon" aria-hidden="true">${s.icon}</span>
+      <span class="stext"><span class="sname">${esc(s.name)}</span><span class="smeta">${w}${m}</span></span>
+      ${s.day ? `<span class="sday">${esc(s.day)}</span>` : ""}
+    </button>
+    <div class="sbody" hidden></div>
+  </article>`;
+}
+
+function defaultMode(s) { return s.metro && s.walk.m > 2700 ? "metro" : "walk"; }
+
+function select(id, m, moveMap) {
+  const s = D.sights.find(x => x.id === id);
+  selected = id;
+  mode = m && (m === "walk" || s.metro) ? m : defaultMode(s);
+  refreshCards();
+  drawRoute(moveMap);
+  setHash();
+  const card = document.querySelector(`.scard[data-id="${id}"]`);
+  if (card && moveMap) card.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+
+function refreshCards() {
+  document.querySelectorAll(".scard").forEach(card => {
+    const on = card.dataset.id === selected;
+    card.classList.toggle("on", on);
+    card.querySelector(".shead").setAttribute("aria-expanded", on);
+    const body = card.querySelector(".sbody");
+    body.hidden = !on;
+    if (on) body.innerHTML = sightBody(D.sights.find(x => x.id === selected));
+  });
+}
+
+function sightBody(s) {
+  const home = D.home;
+  const toggle = s.metro ? `
+    <div class="modes" role="group" aria-label="Route type">
+      <button type="button" data-mode="walk" aria-pressed="${mode === "walk"}">🚶 Walk ${walkMin(s.walk.m)} min</button>
+      <button type="button" data-mode="metro" aria-pressed="${mode === "metro"}">🚇 Metro ${metroMinutes(s.metro)} min</button>
+    </div>` : "";
+  let steps;
+  if (mode === "metro" && s.metro) {
+    const mt = s.metro;
+    const first = mt.rides[0].stops[0].name, last = mt.rides[mt.rides.length - 1].stops.slice(-1)[0].name;
+    steps = `<ol class="steps">
+      <li><span class="sic">🚶</span><span>Walk ${walkMin(mt.walkTo.m)} min (${km(mt.walkTo.m)}) to <b>${esc(first)}</b></span></li>
+      ${mt.rides.map((r, i) => `
+      <li><span class="sic">${lineBadge(r.line, D.lines[r.line])}</span><span>${i ? "Change to" : "Take"} <b>line ${esc(r.line)}</b> toward ${esc(r.dir)}. Ride ${r.stops.length - 1} stop${r.stops.length === 2 ? "" : "s"} to <b>${esc(r.stops.slice(-1)[0].name)}</b>
+        <details class="stops"><summary>Show stops</summary>${r.stops.map(x => esc(x.name)).join(" → ")}</details></span></li>`).join("")}
+      <li><span class="sic">🚶</span><span>Walk ${walkMin(mt.walkFrom.m)} min (${km(mt.walkFrom.m)}) from ${esc(last)} to ${esc(s.name)}</span></li>
+    </ol>
+    <p class="snote">One metro ticket (€2.55) per person covers the whole trip, changes included.</p>`;
+  } else {
+    steps = `<ol class="steps">
+      <li><span class="sic">🚶</span><span>Walk ${walkMin(s.walk.m)} min (${km(s.walk.m)})${s.walk.via.length ? ` via ${s.walk.via.map(esc).join(", ")}` : ""}</span></li>
+    </ol>`;
+  }
+  return `
+    <p>${esc(s.blurb)}</p>
+    ${toggle}
+    ${steps}
+    <p class="slinks">Live directions:
+      <a href="${gmaps(s.lat, s.lon, "walking", home)}" target="_blank" rel="noopener noreferrer">walking ↗</a>
+      ${s.metro ? `· <a href="${gmaps(s.lat, s.lon, "transit", home)}" target="_blank" rel="noopener noreferrer">transit ↗</a>` : ""}
+    </p>`;
+}
+
+function casedLine(latlngs, color, opts = {}) {
+  return [
+    L.polyline(latlngs, { color: "#ffffff", weight: (opts.weight || 5) + 4, opacity: 0.85, lineCap: "round", lineJoin: "round", interactive: false }),
+    L.polyline(latlngs, { color, weight: opts.weight || 5, opacity: 1, dashArray: opts.dash, lineCap: "round", lineJoin: "round", interactive: false }),
+  ];
+}
+
+function drawRoute(moveMap = true) {
+  routeLayer.clearLayers();
+  const s = D.sights.find(x => x.id === selected);
+  if (!s) return;
+  const WALK = "#2f6fed";
+  let bounds = [];
+  if (mode === "metro" && s.metro) {
+    const mt = s.metro;
+    casedLine(mt.walkTo.path, WALK, { dash: "1 9", weight: 5 }).forEach(l => l.addTo(routeLayer));
+    casedLine(mt.walkFrom.path, WALK, { dash: "1 9", weight: 5 }).forEach(l => l.addTo(routeLayer));
+    mt.rides.forEach((r, ri) => {
+      const pts = r.stops.map(x => [x.lat, x.lon]);
+      const color = D.lines[r.line];
+      L.polyline(pts, { color: "#1b1b1b", weight: 10, opacity: 0.55, interactive: false }).addTo(routeLayer);
+      L.polyline(pts, { color, weight: 6, opacity: 1, interactive: false }).addTo(routeLayer);
+      r.stops.forEach((x, i) => {
+        const end = i === 0 || i === r.stops.length - 1;
+        L.circleMarker([x.lat, x.lon], { radius: end ? 7 : 4, color, weight: 3, fillColor: "#fff", fillOpacity: 1 })
+          .bindTooltip(esc(x.name), { direction: "top", offset: [0, -6], permanent: (ri === 0 && i === 0) || i === r.stops.length - 1, className: "stip" })
+          .addTo(routeLayer);
+      });
+      bounds = bounds.concat(pts);
+    });
+    bounds = bounds.concat(mt.walkTo.path, mt.walkFrom.path);
+  } else {
+    casedLine(s.walk.path, WALK, { weight: 6 }).forEach(l => l.addTo(routeLayer));
+    bounds = s.walk.path;
+  }
+  L.marker([s.lat, s.lon], {
+    icon: L.divIcon({ className: "", html: `<div class="pin pin-sight pin-target">${s.icon}</div>`, iconSize: [44, 52], iconAnchor: [22, 52] }),
+    zIndexOffset: 900, interactive: false,
+  }).addTo(routeLayer);
+  if (moveMap) {
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 17 });
+    if (window.innerWidth < 900) document.getElementById("map").scrollIntoView({ block: "start", behavior: "smooth" });
+  }
+}
+
+/* ---------- Nearby ---------- */
+function placePopup(p) {
+  const home = D.home;
+  const q = encodeURIComponent(`${p.name}, ${p.addr ? p.addr + ", " : ""}Paris`);
+  const mins = walkMin(p.m * 1.25);
+  return `<div class="ppop">
+    <b>${esc(p.name)}</b>
+    <div class="muted">${GROUPS[p.g].icon} ${esc(p.label)}${p.cuisine ? " · " + esc(p.cuisine) : ""}</div>
+    <div>🚶 ${mins} min from the Airbnb · ${km(p.m)}</div>
+    ${p.addr ? `<div>📍 ${esc(p.addr)}</div>` : ""}
+    ${p.hours ? `<div>🕒 ${esc(p.hours)}</div>` : ""}
+    <div class="plinks">
+      ${p.web ? `<a href="${esc(p.web)}" target="_blank" rel="noopener noreferrer">Website ↗</a>` : ""}
+      <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener noreferrer">Google Maps ↗</a>
+      <a href="${gmaps(p.lat, p.lon, "walking", home)}" target="_blank" rel="noopener noreferrer">Walk there ↗</a>
+    </div>
+  </div>`;
+}
+
+function renderChips() {
+  const counts = {};
+  D.places.forEach(p => counts[p.g] = (counts[p.g] || 0) + 1);
+  const box = document.getElementById("chips");
+  box.innerHTML = Object.entries(GROUPS).filter(([g]) => counts[g]).map(([g, v]) =>
+    `<button type="button" class="chip" data-g="${g}" aria-pressed="${v.on}">${v.icon} ${v.label} <span>${counts[g]}</span></button>`).join("");
+  box.addEventListener("click", e => {
+    const b = e.target.closest("[data-g]");
+    if (!b) return;
+    const g = b.dataset.g;
+    GROUPS[g].on = !GROUPS[g].on;
+    b.setAttribute("aria-pressed", GROUPS[g].on);
+    if (GROUPS[g].on) placeLayers[g].addTo(map); else map.removeLayer(placeLayers[g]);
+    renderPlaces();
+  });
+}
+
+function renderPlaces() {
+  const q = document.getElementById("placeSearch").value.trim().toLowerCase();
+  const list = D.places.filter(p => GROUPS[p.g].on && (!q || (p.name + " " + p.label + " " + (p.cuisine || "")).toLowerCase().includes(q)));
+  document.getElementById("placeCount").textContent = `${list.length} place${list.length === 1 ? "" : "s"} within ${D.radius} m, closest first`;
+  document.getElementById("placeList").innerHTML = list.map(p => `
+    <li><button type="button" class="pitem" data-i="${p._i}">
+      <span class="dot dot-${p.g}" aria-hidden="true">${GROUPS[p.g].icon}</span>
+      <span class="ptext"><span class="pname">${esc(p.name)}</span>
+        <span class="pmeta">${esc(p.label)}${p.cuisine ? " · " + esc(p.cuisine) : ""}${p.addr ? " · " + esc(p.addr) : ""}</span></span>
+      <span class="pdist">${walkMin(p.m * 1.25)} min</span>
+    </button></li>`).join("") || '<li class="empty">Nothing matches. Try turning on more categories.</li>';
+}
+
+document.getElementById("placeList").addEventListener("click", e => {
+  const b = e.target.closest("[data-i]");
+  if (!b) return;
+  const p = D.places[+b.dataset.i];
+  routeLayer.clearLayers();
+  map.flyTo([p.lat, p.lon], 18, { duration: 0.8 });
+  map.once("moveend", () => p._marker.openPopup());
+  if (window.innerWidth < 900) document.getElementById("map").scrollIntoView({ block: "start", behavior: "smooth" });
+});
+</script>
+<script src="theme.js"></script>
+</body>
+</html>

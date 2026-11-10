@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Amsterdam &amp; Paris</title>
-<meta name="description" content="Nov 27 – Dec 7, 2026 · day-by-day itinerary and shared budget">
+<meta name="description" content="Nov 27 – Dec 7, 2026 · day-by-day itinerary, daily costs and ways to save">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,52 +17,55 @@
 <nav class="pagetabs" aria-label="Pages">
   <div class="wrap">
     <a href="./" aria-current="page">Itinerary</a>
+    <a href="map.html">Paris Map</a>
     <a href="gear.html">Gear &amp; Insurance</a>
   </div>
 </nav>
 
 <div class="wrap">
   <header class="hero">
-    <div class="eyebrow">Nov 27 – Dec 7, 2026 · <span class="nTravelers">3 travelers</span></div>
+    <div class="eyebrow">Nov 27 – Dec 7, 2026 · 3 in Amsterdam, 4 in Paris</div>
     <h1>Amsterdam &amp; Paris</h1>
     <div class="route" aria-label="Route">
       <div class="stop"><b>MSP</b><span>Fri 27 Nov</span></div>
       <div class="leg">overnight flight</div>
-      <div class="stop ams"><b>AMS</b><span>4 nights</span></div>
+      <div class="stop ams"><b>AMS</b><span>4 nights · 3 of us</span></div>
       <div class="leg">Eurostar 3h25</div>
-      <div class="stop par"><b>PAR</b><span>5 nights</span></div>
+      <div class="stop par"><b>PAR</b><span>5 nights · 4 of us</span></div>
       <div class="leg">CDG flight</div>
       <div class="stop"><b>MSP</b><span>Mon 7 Dec</span></div>
     </div>
   </header>
 
-  <div class="picker">
-    <div class="q">How many people are going?<small>The budget below updates to match.</small></div>
-    <div class="stepper">
-      <button type="button" id="minus" aria-label="One fewer traveler">−</button>
-      <output id="nOut" aria-live="polite">3</output>
-      <button type="button" id="plus" aria-label="One more traveler">+</button>
-    </div>
+  <div class="banner">
+    <strong>Flights and stays are booked.</strong> This budget only covers day-to-day spending: food, transit and tickets. The Paris Airbnb is at <a href="map.html">130 Rue de Turenne (3rd arr.)</a>. See the Paris Map tab for walking and metro routes.
   </div>
 
   <section id="budget">
-    <h2>Budget</h2>
-    <p class="lede">The big shared purchases for the whole group. Food, transit and attraction tickets are left out. €1 = $<span id="fx"></span>.</p>
+    <h2>Day-to-day budget</h2>
+    <p class="lede">Food, transit and tickets from the itinerary below. €1 = $<span id="fx"></span>.</p>
     <div class="totals">
-      <div class="tile primary"><div class="label">Total, for <span class="nTravelers">3 travelers</span></div><div class="value num" id="tTotal"></div><div class="sub">flights, lodging, Eurostar and extras</div></div>
-      <div class="tile"><div class="label">Per person</div><div class="value num" id="tEach"></div><div class="sub">if everything is split evenly</div></div>
+      <div class="tile primary"><div class="label">Each of the 3 (whole trip)</div><div class="value num" id="tFull"></div><div class="sub" id="tFullEur"></div></div>
+      <div class="tile"><div class="label">Our 4th (Paris only)</div><div class="value num" id="tParis"></div><div class="sub" id="tParisEur"></div></div>
+      <div class="tile"><div class="label">Everyone, all costs</div><div class="value num" id="tAll"></div><div class="sub" id="tAllEur"></div></div>
     </div>
     <div class="table-card">
       <table>
-        <thead><tr><th>Item</th><th class="r">Group</th><th class="r">Each</th></tr></thead>
+        <thead><tr><th>Part of the trip</th><th class="r">Group</th><th class="r">Each</th></tr></thead>
         <tbody id="budgetRows"></tbody>
       </table>
     </div>
   </section>
 
+  <section id="save">
+    <h2>Ways to save</h2>
+    <p class="lede">The passes worth buying, the ones to skip, and the free days that line up with our dates.</p>
+    <div class="save-grid" id="saveList"></div>
+  </section>
+
   <section id="days">
     <h2>Day by day</h2>
-    <p class="lede">Sunset is around 4:30pm, so outdoor things go mid-day and museums and lights go later.</p>
+    <p class="lede">Costs on each day are for everyone there that day. Sunset is around 4:30pm in Amsterdam and 4:55pm in Paris, so outdoor things go mid-day and museums and lights go later.</p>
     <div class="filters" role="group" aria-label="Filter days">
       <button type="button" data-f="all" aria-pressed="true">All days</button>
       <button type="button" data-f="ams" aria-pressed="false">Amsterdam</button>
@@ -73,7 +76,7 @@
 
   <section id="book">
     <h2>Book these now</h2>
-    <p class="lede">The trip is four weeks out. Cheap Eurostar fares and popular timeslots go first. Book everyone in one order so you get seats and slots together. Ticks are saved in your own browser only, so they won't show up for anyone else.</p>
+    <p class="lede">The trip is a little over two weeks out. Popular timeslots go first. Book everyone in one order so you get slots together. Ticks are saved in your own browser only, so they won't show up for anyone else.</p>
     <ul class="checklist" id="checklist"></ul>
   </section>
 
@@ -82,9 +85,9 @@
     <ul class="plain">
       <li>ETIAS isn't required for this trip. It has no launch date yet, and there's a transition period once it starts.</li>
       <li>Amsterdam: each person taps their own Visa or Mastercard (not Amex) in and out on trams and trains. One card can't pay for the group.</li>
-      <li>Paris: one Navigo Easy card each. The CDG airport ticket can't share a card with regular tickets, so buy it Monday morning.</li>
+      <li>Paris: every person needs their own ticket, on a Navigo Easy card or on their phone. The nearest metro is Filles du Calvaire (line 8), about 4 minutes' walk from the Airbnb.</li>
       <li>Sunset is around 4:30pm. Do outdoor stuff mid-day, museums and lights later.</li>
-      <li>Lunch is easy to walk into, but book dinners on Fri and Sat, especially in Paris.</li>
+      <li>Museums close one day a week. The Louvre and the Orangerie close Tuesdays. Orsay and the Musée Picasso close Mondays.</li>
       <li>Splitting costs: one person books each group purchase and the others pay them back. A shared expense app (Splitwise or similar) keeps it simple.</li>
     </ul>
   </section>
@@ -92,13 +95,12 @@
   <section id="assumptions">
     <h2>Assumptions</h2>
     <ul class="plain">
+      <li>Flights, the Amsterdam hotel and the Paris Airbnb are already paid for and aren't counted.</li>
+      <li>3 people in Amsterdam (Nov 28 – Dec 2) and on the Eurostar. 4 people in Paris (Dec 2 – 7). The 4th person's own travel to Paris isn't included.</li>
       <li>The euro rate is €1 = $1.16.</li>
-      <li>Flights: the first two seats are ≈$810 each, backed out of the original two-person budget. Each seat booked now is estimated at ≈$1,000 until it's actually booked.</li>
-      <li>Amsterdam hotel: $583 for one room for 4 nights. Rooms are doubles, and an odd person out turns one double into a triple (+$200).</li>
-      <li>Paris Airbnb: $700 for two, plus ≈$120 for each extra guest (fee and city tax). This assumes the place sleeps everyone.</li>
-      <li>Eurostar is estimated at €80 each. Being four weeks out and booking seats together pushes the typical €55–99 fare up.</li>
-      <li>Trip-wide extras are ≈$172 per person (the original $343 for two).</li>
-      <li>Food, local transit, museum and attraction tickets aren't included in the budget.</li>
+      <li>Food is about €55 per person per day: bakery breakfast ~€7, casual lunch ~€18, sit-down dinner ~€25, coffee and snacks ~€5. Monday the 7th is breakfast only.</li>
+      <li>The Eurostar is estimated at €95 each for 3 seats bought now. Remove it if you've already booked.</li>
+      <li>Ticket prices are 2026 adult, non-EU prices from the sources below. Some differ between sources, so confirm when you book.</li>
       <li>Card foreign-transaction fees can add 1–3% unless you use a no-FX-fee card.</li>
     </ul>
   </section>
@@ -106,211 +108,255 @@
   <section id="sources">
     <h2>Sources</h2>
     <ul class="plain">
-      <li><a href="https://www.amsterdamtips.com/transport-tickets">Amsterdam transport tickets 2026 — AmsterdamTips</a></li>
-      <li><a href="https://amsterdam-explorer.com/i-amsterdam-card/">I amsterdam City Card 2026 — Amsterdam Explorer</a></li>
-      <li><a href="https://www.artvisitguide.com/amsterdam-museumkaart-guide-2026/">Van Gogh &amp; Anne Frank prices — ArtVisitGuide</a></li>
-      <li><a href="https://amsterdam-explorer.com/?p=424">Amsterdam Light Festival 2026–27 — Amsterdam Explorer</a></li>
-      <li><a href="https://amsterdam-explorer.com/train-amsterdam-paris/">Eurostar Amsterdam → Paris — Amsterdam Explorer</a></li>
-      <li><a href="https://www.trvlogue.com/en/paris-museum-pass-prices">Paris Museum Pass 2026 — TRVLOGUE</a></li>
       <li><a href="https://worldinparis.com/paris-metro-tickets">Paris metro tickets 2026 — World in Paris</a></li>
-      <li><a href="https://parisbytrain.com/paris-airport-train-ticket/">Paris airport ticket — Paris by Train</a></li>
+      <li><a href="https://www.sortiraparis.com/en/news/in-paris/articles/337462-navigo-pass-and-metro-train-tickets-new-fares-expected-in-january-2026">Navigo and metro fares from January 2026 — Sortir à Paris</a></li>
+      <li><a href="https://www.bouger-voyager.com/taxi-aeroport-cdg-en-2026-le-vrai-prix-forfait-reservation-attente-et-comment-payer-moins/">CDG taxi flat fares 2026 — Bouger Voyager</a></li>
+      <li><a href="https://www.artvisitguide.com/louvre-museum-tickets-guide/">Louvre 2026 prices (€22 EEA / €32 non-EEA) — ArtVisitGuide</a></li>
+      <li><a href="https://museumpedia.org/museums-by-city/paris-museum-pass/">Paris Museum Pass 2026 — Museumpedia</a></li>
+      <li><a href="https://www.musee-orangerie.fr/en/whats-on/tours-and-workshops/1st-sunday-month-free-all-online-time-slot-booking-mandatory">Orangerie: free first Sunday, booking required — official site</a></li>
+      <li><a href="https://www.artvisitguide.com/musee-orsay-free-admission-2026/">Musée d'Orsay free first Sunday 2026 — ArtVisitGuide</a></li>
+      <li><a href="https://www.artvisitguide.com/musee-picasso-paris-tickets-guide/">Musée Picasso tickets and free days — ArtVisitGuide</a></li>
+      <li><a href="https://www.sortiraparis.com/en/what-to-visit-in-paris/exhibit-museum/guides/64415-free-museums-and-monuments-places-to-visit-this-sunday-december-6-in-paris-and-ile-de-france">Free museums Sunday Dec 6 — Sortir à Paris</a></li>
       <li><a href="https://www.toureiffel.paris/en/rates-opening-times">Eiffel Tower rates — official site</a></li>
+      <li><a href="https://www.amsterdamtips.com/gvb-tickets-amsterdam">GVB tickets and multi-day passes — AmsterdamTips</a></li>
+      <li><a href="https://www.amsterdamtourism.org/getting-around-amsterdam/">Tapping in with a bank card in Amsterdam — AmsterdamTourism</a></li>
+      <li><a href="https://www.amsterdamtourism.org/things-to-do-in-amsterdam/anne-frank-house-visitor-guide/">Anne Frank House 2026 — AmsterdamTourism</a></li>
+      <li><a href="https://holland-explorer.com/van-gogh-museum/">Van Gogh Museum prices — Holland Explorer</a></li>
+      <li><a href="https://www.iamsterdam.com/uit/agenda/attracties-en-bezienswaardigheden/rondvaarten/amsterdam-light-festival-stromma">Amsterdam Light Festival 2026–27 — I amsterdam</a></li>
+      <li><a href="https://www.amsterdamtips.com/schiphol-airport-to-amsterdam">Schiphol to Amsterdam by train — AmsterdamTips</a></li>
       <li><a href="https://navan.com/blog/when-does-etias-go-into-effect">ETIAS launch status — Navan</a></li>
     </ul>
   </section>
 
   <footer>
-    Prices checked Oct 18, 2026, and updated Oct 29, 2026. These are estimates, so confirm before booking.
+    Prices checked Nov 10, 2026. These are estimates, so confirm before booking.
   </footer>
 </div>
 
 <script>
 /* ---------- Trip data: edit numbers here ---------- */
-const FX = 1.16;              // USD per EUR
-const DEFAULT_PEOPLE = 3;
-const MIN_PEOPLE = 1, MAX_PEOPLE = 10;
+const FX = 1.16;   // USD per EUR
+const FOOD = 55;   // per person per day
+const METRO = 2.55, TRAM = 1.70;
 
-const FLIGHT_EARLY = 809.5;   // per seat, first two (backed out of the original $5,187 two-person total)
-const FLIGHT_NOW = 1000;      // per seat, each one booked now (placeholder until booked)
-const HOTEL_ROOM = 583;       // Amsterdam, one double room, 4 nights
-const HOTEL_TRIPLE_EXTRA = 200;
-const AIRBNB_BASE = 700;      // Paris, 5 nights, two guests
-const AIRBNB_EXTRA_GUEST = 120;
-const EUROSTAR_EUR = 80;      // per person
-const EXTRAS_EACH = 171.5;    // trip-wide extras per person
-
-const plural = (n, w) => n + " " + w + (n === 1 ? "" : "s");
-
-// Each item returns the USD cost for the whole group of n people.
-const BIG = [
-  { label: "Flights · MSP → AMS, CDG → MSP",
-    cost: n => FLIGHT_EARLY * Math.min(n, 2) + FLIGHT_NOW * Math.max(n - 2, 0),
-    note: n => n <= 2 ? "≈$810 a seat" : "≈$810 a seat for the first two, ≈$1,000 for each seat booked now" },
-  { label: "Amsterdam hotel · 4 nights",
-    cost: n => n <= 2 ? HOTEL_ROOM : Math.floor(n / 2) * HOTEL_ROOM + (n % 2) * HOTEL_TRIPLE_EXTRA,
-    note: n => n === 1 ? "One room"
-      : n === 2 ? "One double room"
-      : n === 3 ? "One triple room"
-      : plural(Math.floor(n / 2), "room") + (n % 2 ? ", one of them a triple" : "") },
-  { label: "Paris Airbnb · 5 nights",
-    cost: n => AIRBNB_BASE + Math.max(n - 2, 0) * AIRBNB_EXTRA_GUEST,
-    note: n => n <= 2 ? "Booked for two" : "$700 base + ≈$120 per extra guest. Needs to sleep " + n },
-  { label: "Eurostar · Amsterdam → Paris",
-    cost: n => n * EUROSTAR_EUR * FX,
-    note: n => "€" + EUROSTAR_EUR + " each · Wed 2 Dec" },
-  { label: "Trip-wide extras",
-    cost: n => n * EXTRAS_EACH,
-    note: n => "≈$172 each · not tied to a single day" },
-];
-
+// Each day sets `n` (people there). A cost's eur is PER PERSON for n people,
+// unless it sets its own n, or group:true (one price split by everyone that day).
 const DAYS = [
-  { date: "2026-11-27", city: "home", title: "Minneapolis → Amsterdam", where: "MSP · overnight flight",
+  { date: "2026-11-27", city: "home", n: 3, title: "Minneapolis → Amsterdam", where: "MSP · overnight flight",
     plan: [
-      ["Afternoon", "Check in at MSP. If anyone is on a separate booking, link the reservations or ask the airline so you can sit together."],
+      ["Afternoon", "Check in at MSP and sit together if you can."],
       ["Overnight", "Sleep as much as you can. We land Saturday morning."],
-    ] },
+    ],
+    costs: [] },
 
-  { date: "2026-11-28", city: "ams", title: "Arrive & ease in", where: "Amsterdam · Jordaan",
+  { date: "2026-11-28", city: "ams", n: 3, title: "Arrive & ease in", where: "Amsterdam · Jordaan",
     plan: [
       ["Morning", "Land at Schiphol and take the train to Centraal (~15 min). Each person taps in with their own card. Drop bags at the hotel."],
       ["Midday", "Apple pie at Winkel 43 and the Saturday Noordermarkt farmers' market, then wander the Jordaan canals."],
       ["Afternoon", "Check in. A nap is allowed, but keep it under an hour."],
       ["Evening", "Early dinner and a drink at a brown café like ’t Smalle. Bed early."],
-    ] },
+    ],
+    costs: [{ label: "Schiphol → Centraal train", eur: 6.2 }, { label: "Trams (2 rides)", eur: TRAM * 2 }, { label: "Food", eur: FOOD }] },
 
-  { date: "2026-11-29", city: "ams", title: "Museumplein & lights", where: "Amsterdam · Museum Quarter",
+  { date: "2026-11-29", city: "ams", n: 3, title: "Museumplein & lights", where: "Amsterdam · Museum Quarter",
     plan: [
       ["Morning", "Van Gogh Museum on a timed slot. Book everyone's tickets together."],
       ["Midday", "Walk through Vondelpark to lunch at Foodhallen."],
-      ["Afternoon", "Optional: the Rijksmuseum, or coffee in De Pijp."],
-      ["Evening", "Walk the Amsterdam Light Festival route once it's dark, if the festival has opened. It usually starts in late November."],
-    ] },
+      ["Afternoon", "Optional: the Rijksmuseum (~€25, not counted), or coffee in De Pijp."],
+      ["Evening", "Walk the Amsterdam Light Festival route once it's dark. It opened Nov 26 and the artworks are free to see."],
+    ],
+    costs: [{ label: "Van Gogh Museum", eur: 27 }, { label: "Trams (2 rides)", eur: TRAM * 2 }, { label: "Food", eur: FOOD }] },
 
-  { date: "2026-11-30", city: "ams", title: "Canals & Anne Frank", where: "Amsterdam · Canal Ring",
+  { date: "2026-11-30", city: "ams", n: 3, title: "Canals & Anne Frank", where: "Amsterdam · Canal Ring",
     plan: [
       ["Morning", "Shops and coffee in the Nine Streets (De 9 Straatjes)."],
-      ["Midday", "Anne Frank House on a timed slot, with everyone on one booking."],
+      ["Midday", "Anne Frank House on a timed slot, with everyone on one booking. Tickets are online only."],
       ["Afternoon", "Westerkerk, the Begijnhof courtyard and the Bloemenmarkt."],
-      ["Evening", "Light Festival canal cruise after dark, then dinner."],
-    ] },
+      ["Evening", "Light Festival canal cruise after dark (about 75 minutes), then dinner."],
+    ],
+    costs: [{ label: "Anne Frank House", eur: 16.5 }, { label: "Light Festival cruise", eur: 25 }, { label: "Trams (2 rides)", eur: TRAM * 2 }, { label: "Food", eur: FOOD }] },
 
-  { date: "2026-12-01", city: "ams", title: "Haarlem day trip", where: "Haarlem · 15 min by train",
+  { date: "2026-12-01", city: "ams", n: 3, title: "Haarlem day trip", where: "Haarlem · 15 min by train",
     plan: [
       ["Morning", "Train from Centraal to Haarlem. See the Grote Markt and St. Bavo church."],
       ["Afternoon", "Optional: the Frans Hals Museum. Then a beer at Jopenkerk, a brewery inside a church."],
       ["Evening", "Back to Amsterdam for an Indonesian rijsttafel dinner (made for sharing). Pack for tomorrow's train."],
-    ] },
-
-  { date: "2026-12-02", city: "par", title: "Eurostar to Paris", where: "Amsterdam → Paris · 3h25",
-    plan: [
-      ["Morning", "Be at Amsterdam Centraal 45 min early for the Eurostar. Pick seats together when booking (tables of four in Standard)."],
-      ["Afternoon", "Arrive at Gare du Nord. Buy a Navigo Easy card for each person at the station and take the metro to the Airbnb."],
-      ["Evening", "Walk the Seine after dark from Hôtel de Ville to Pont des Arts. Dinner in the Marais."],
-    ] },
-
-  { date: "2026-12-03", city: "par", title: "Montmartre & Orsay", where: "Paris · Museum Pass day 1",
-    plan: [
-      ["Morning", "Metro to Abbesses. Sacré-Cœur, Place du Tertre and Rue de l'Abreuvoir."],
-      ["Midday", "The Christmas tree under the Galeries Lafayette dome, plus the free rooftop view."],
-      ["Afternoon", "Start the 2-day Museum Pass at the Musée d'Orsay around 3pm. It's open late on Thursdays."],
-      ["Evening", "Dinner in Saint-Germain."],
     ],
-    tip: "The 2-day pass covers Orsay, the Louvre, Sainte-Chapelle and the Arc de Triomphe. It works out cheaper than buying them separately, now that the Louvre charges non-EU visitors more." },
+    costs: [{ label: "Haarlem train, return", eur: 10 }, { label: "Trams (2 rides)", eur: TRAM * 2 }, { label: "Food", eur: FOOD }] },
 
-  { date: "2026-12-04", city: "par", title: "Île de la Cité & the Louvre", where: "Paris · Museum Pass day 2",
+  { date: "2026-12-02", city: "par", n: 4, title: "Eurostar to Paris", where: "Amsterdam → Paris · the 4th joins us",
     plan: [
-      ["Morning", "Sainte-Chapelle (pass plus timeslot), then Notre-Dame (free, but reserve a slot)."],
+      ["Morning", "Tram to Amsterdam Centraal and be there 45 min early for the Eurostar. Book seats together (tables of four in Standard)."],
+      ["Afternoon", "Arrive at Gare du Nord. Take metro line 5 (direction Place d'Italie) 3 stops to République, then walk 6 minutes to the Airbnb. With bags, a taxi for 3 is about €15–20."],
+      ["Evening", "Meet up with the 4th. Dinner around Rue de Bretagne, a block away, and a night walk down to Hôtel de Ville and the Seine."],
+    ],
+    costs: [
+      { label: "Eurostar (if not booked yet)", eur: 95, n: 3 },
+      { label: "Tram to Centraal", eur: TRAM, n: 3 },
+      { label: "Navigo Easy card", eur: 2 },
+      { label: "Metro Gare du Nord → République", eur: METRO, n: 3 },
+      { label: "Food", eur: FOOD },
+    ] },
+
+  { date: "2026-12-03", city: "par", n: 4, title: "Montmartre & the grands magasins", where: "Paris · 18th & 9th",
+    plan: [
+      ["Morning", "Metro line 8 from Filles du Calvaire to Madeleine, then line 12 to Abbesses. Walk up to Sacré-Cœur, Place du Tertre and Rue de l'Abreuvoir."],
+      ["Midday", "Walk down through Pigalle to the Christmas tree under the Galeries Lafayette dome, plus the free rooftop view and the Opéra Garnier facade."],
+      ["Afternoon", "Shop the window displays on Boulevard Haussmann, then line 8 home from Opéra (direct, 6 stops)."],
+      ["Evening", "Dinner in the Marais. Try the Marché des Enfants Rouges stalls, 4 minutes from the Airbnb (closed Mondays)."],
+    ],
+    costs: [{ label: "Metro (2 rides)", eur: METRO * 2 }, { label: "Food", eur: FOOD }] },
+
+  { date: "2026-12-04", city: "par", n: 4, title: "Île de la Cité & the Louvre", where: "Paris · 1st & 4th",
+    plan: [
+      ["Morning", "Walk about 27 minutes to Sainte-Chapelle (timed slot), then Notre-Dame (free, but reserve a slot)."],
       ["Midday", "Lunch in the Latin Quarter and a stop at Shakespeare and Company."],
-      ["Afternoon", "The Louvre. You need a timed slot even with the pass. It's open late on Fridays."],
-      ["Evening", "Tuileries, then the Champs-Élysées Christmas lights, ending on the Arc de Triomphe rooftop (on the pass)."],
-    ] },
+      ["Afternoon", "The Louvre on a timed slot. It's open late on Fridays."],
+      ["Evening", "Walk the Tuileries, then metro line 1 → line 8 home."],
+    ],
+    costs: [{ label: "Sainte-Chapelle (non-EU)", eur: 22 }, { label: "Louvre (non-EU)", eur: 32 }, { label: "Metro (1 ride)", eur: METRO }, { label: "Food", eur: FOOD }],
+    tip: "Pay for these two individually and skip the Museum Pass. Sunday's free entries cover the rest, as explained under Ways to save." },
 
-  { date: "2026-12-05", city: "par", title: "Eiffel Tower day", where: "Paris · 7th arrondissement",
+  { date: "2026-12-05", city: "par", n: 4, title: "Eiffel Tower day", where: "Paris · 16th & 7th",
     plan: [
-      ["Morning", "Trocadéro for the classic photo, then the Rue Cler market street."],
-      ["Midday", "Eiffel Tower summit by lift, with everyone on one order. Mid-day gives the clearest view."],
-      ["Afternoon", "Seine cruise timed for sunset (~4:30pm)."],
-      ["Evening", "The tower sparkles for five minutes on the hour after dark. Book Saturday dinner ahead."],
-    ] },
+      ["Morning", "Walk to République and take line 9 (direction Pont de Sèvres) straight to Trocadéro for the classic view."],
+      ["Midday", "Cross Pont d'Iéna to the Eiffel Tower summit on a booked slot. Mid-day gives the clearest view."],
+      ["Afternoon", "Lunch on Rue Cler, then a Seine cruise timed for sunset (~4:55pm)."],
+      ["Evening", "The tower sparkles for five minutes on the hour after dark. Line 8 home from École Militaire (direct)."],
+    ],
+    costs: [{ label: "Eiffel Tower summit (lift)", eur: 36.7 }, { label: "Seine cruise", eur: 19 }, { label: "Metro (2 rides)", eur: METRO * 2 }, { label: "Food", eur: FOOD }],
+    tip: "Taking the stairs to the 2nd floor and the lift to the top is €28 instead of €36.70. That's €35 less for the four of us." },
 
-  { date: "2026-12-06", city: "par", title: "Marais Sunday", where: "Paris · Le Marais",
+  { date: "2026-12-06", city: "par", n: 4, title: "Free first Sunday", where: "Paris · Marais, Orsay & Arc",
     plan: [
-      ["Morning", "Place des Vosges and the Musée Carnavalet (free)."],
+      ["Morning", "Musée Picasso, an 8-minute walk from the Airbnb (likely free today, so confirm). Then Place des Vosges and the Musée Carnavalet (always free)."],
       ["Midday", "Falafel on Rue des Rosiers. L'As du Fallafel is open Sundays."],
-      ["Afternoon", "The Marais shops stay open on Sundays. Then walk up to Canal Saint-Martin."],
-      ["Evening", "Farewell dinner (book ahead) and pack."],
-    ] },
+      ["Afternoon", "Musée d'Orsay, free today with a booked slot. Line 8 to Concorde, then line 12 to Solférino. The Orangerie (Monet's water lilies) across the river is also free with a slot."],
+      ["Evening", "Line 12 → line 1 to the Arc de Triomphe for sunset from the rooftop (reported free on first Sundays Nov–Mar). Walk down the lit-up Champs-Élysées. Farewell dinner, then pack."],
+    ],
+    costs: [{ label: "Musée Picasso, Orsay, Orangerie, Arc", eur: 0 }, { label: "Metro (3 rides)", eur: METRO * 3 }, { label: "Food", eur: FOOD }],
+    tip: "First-Sunday slots for Orsay and the Orangerie can run out. Book them right away. If they're gone, see the Museum Pass backup plan under Ways to save." },
 
-  { date: "2026-12-07", city: "home", title: "Paris → Minneapolis", where: "CDG · flight home",
+  { date: "2026-12-07", city: "home", n: 4, title: "Paris → Minneapolis", where: "CDG · flight home",
     plan: [
-      ["Morning", "Last bakery breakfast. Buy the CDG airport ticket this morning, on its own (it can't share a Navigo Easy with regular tickets)."],
-      ["Then", "RER B to Charles de Gaulle. Leave the Airbnb about 3½ hours before departure."],
-    ] },
+      ["Morning", "Last bakery breakfast from one of the boulangeries around the corner."],
+      ["Then", "Taxi to Charles de Gaulle at the flat €56 fare for up to 4 people with bags, about €14 each, the same as the RER. Leave the Airbnb about 3½ hours before departure."],
+    ],
+    costs: [{ label: "Taxi to CDG (flat fare)", eur: 56, group: true }, { label: "Breakfast & coffee", eur: 10 }] },
+];
+
+const SAVE = [
+  { verdict: "Skip", tone: "bad", title: "Paris Museum Pass",
+    body: "Pay for the Louvre (€32) and Sainte-Chapelle (€22) individually, €54 each. Use Sunday Dec 6, the first Sunday of the month, for the free museums: Orsay, the Orangerie, the Musée Picasso and the Arc de Triomphe. The 2-day pass is about €85 in 2026, so this saves ~€31 each, or ~€124 for the four of us.",
+    fallback: "Backup plan: if the Sunday slots are gone, buy the 2-day pass for Fri–Sat. The Louvre €32 + Sainte-Chapelle €22 + Orsay €16 + Arc €16 + Picasso €16 add up to €102, so the pass still saves €17 each." },
+  { verdict: "Pay per ride", tone: "good", title: "Paris metro",
+    body: "A single metro ticket is €2.55 in 2026, and the 10-ticket discount ended in January. This plan has about 9 rides each (~€23). A Navigo Semaine is €32.40 + €5 card, and it runs Monday to Sunday, which doesn't fit Wed–Mon. A Navigo Jour (€12.30) only pays off at 5+ rides in a day.",
+    fallback: "Get each person a Navigo Easy card (€2) at any station, or load tickets in the Île-de-France Mobilités app and skip the card. One ticket covers transfers between metro lines." },
+  { verdict: "Taxi", tone: "good", title: "Getting to CDG",
+    body: "The Marais is on the Right Bank, where the flat taxi fare to CDG is €56 for up to 4 people. That's €14 each, the same as the RER B airport ticket, but door to door with luggage and no transfers.",
+    fallback: "Use the official taxi rank or the G7 app. Booking ahead can add a small fee." },
+  { verdict: "Save €35", tone: "good", title: "Eiffel Tower",
+    body: "The summit by lift is €36.70. Stairs to the 2nd floor plus the lift to the top is €28. Either way, book a timeslot ahead because the summit sells out." },
+  { verdict: "Tap your card", tone: "good", title: "Amsterdam trams",
+    body: "Tapping a bank card in and out costs about €1.70 for a typical tram ride. A 96-hour GVB pass is €27.50 and only pays off at 4+ rides a day. We mostly walk, at about 2 rides a day." },
+  { verdict: "Skip", tone: "bad", title: "I amsterdam City Card",
+    body: "It doesn't include the Van Gogh Museum or the Anne Frank House, the two big tickets in our plan. A Museumkaart only makes sense if you add 3–4 more museums." },
+  { verdict: "Free", tone: "info", title: "Free things on our route",
+    body: "Notre-Dame (reserve a slot), the Musée Carnavalet next to the Airbnb, the Galeries Lafayette rooftop, the Amsterdam Light Festival artworks on foot, and the Eiffel Tower sparkle every hour after dark." },
+  { verdict: "~€5/day", tone: "info", title: "Breakfast at the Airbnb",
+    body: "There are boulangeries on the block, an E.Leclerc supermarket 2 minutes away, and greengrocers and a cheese shop on Rue de Bretagne (see the Paris Map). Croissants and coffee at home instead of a café saves about €5 a person a day." },
 ];
 
 const BOOK = [
-  { t: "Flights for everyone", d: "Same flights for the whole group if you can, then link the bookings or pick seats together." },
-  { t: "Amsterdam hotel rooms", d: "Make sure there's a bed for everyone (doubles, or a triple). Confirm the price and the city tax." },
-  { t: "Paris Airbnb guest count", d: "Check it sleeps the whole group and update the guest count so the fee and tax are right." },
-  { t: "Eurostar · Wed 2 Dec", d: "All seats on one booking so you sit together. Fares climb fast now." },
-  { t: "Anne Frank House · Mon 30 Nov", d: "Timed slots sell out. If some tickets are already booked, try to add the rest for the same slot." },
-  { t: "Van Gogh Museum · Sun 29 Nov", d: "Timed entry, one order for everyone." },
-  { t: "Light Festival canal cruise · Mon 30 Nov", d: "Pick an after-dark departure." },
-  { t: "Louvre timeslot · Fri 4 Dec", d: "Required even with the Museum Pass." },
-  { t: "Sainte-Chapelle timeslot · Fri 4 Dec", d: "Book with the Museum Pass option." },
-  { t: "Eiffel Tower summit · Sat 5 Dec", d: "Summit by lift, everyone in one order." },
+  { t: "Orsay free first-Sunday slot · Sun 6 Dec", d: "Booking is mandatory for the free day. Book 4 now. Slots can run out." },
+  { t: "Orangerie free first-Sunday slot · Sun 6 Dec", d: "Free for everyone with an online timeslot." },
+  { t: "Musée Picasso · Sun 6 Dec", d: "Check whether first-Sunday entry is free and whether you need a slot." },
+  { t: "Eurostar · Wed 2 Dec", d: "Three seats on one booking, if you haven't booked yet. Fares climb fast now." },
+  { t: "Anne Frank House · Mon 30 Nov", d: "Online only and timed slots sell out. Three tickets in one order." },
+  { t: "Van Gogh Museum · Sun 29 Nov", d: "Timed entry, three tickets." },
+  { t: "Light Festival canal cruise · Mon 30 Nov", d: "Pick an after-dark departure for three." },
+  { t: "Sainte-Chapelle timeslot · Fri 4 Dec", d: "Four tickets." },
+  { t: "Louvre timeslot · Fri 4 Dec", d: "Four tickets, non-EU price €32." },
   { t: "Notre-Dame free reservation · Fri 4 Dec", d: "Optional but skips the line." },
-  { t: "Dinner reservations · Fri, Sat & Sun in Paris", d: "Book a table for the whole group." },
+  { t: "Eiffel Tower summit · Sat 5 Dec", d: "Four tickets in one order. Stairs + lift is cheaper." },
+  { t: "Dinner reservations for 4 · Fri, Sat & Sun", d: "Book a table for the whole group, especially the Sunday farewell dinner." },
 ];
 
 /* ---------- Rendering ---------- */
 const usd = n => "$" + Math.round(n).toLocaleString("en-US");
+const eur = n => {
+  const r = Math.round(n * 100) / 100;
+  return "€" + r.toLocaleString("en-US", { minimumFractionDigits: Number.isInteger(r) ? 0 : 2, maximumFractionDigits: 2 });
+};
 document.getElementById("fx").textContent = FX.toFixed(2);
 
-// Traveler count comes from ?people=N so a shared link keeps the same number.
-const clamp = n => Math.min(MAX_PEOPLE, Math.max(MIN_PEOPLE, n));
-let people = clamp(parseInt(new URLSearchParams(location.search).get("people"), 10) || DEFAULT_PEOPLE);
+// Normalise each cost into people count, group total and per-person share.
+const lines = DAYS.flatMap(d => d.costs.map(c => {
+  const n = c.n || d.n;
+  const total = c.group ? c.eur : c.eur * n;
+  return { ...c, day: d, n, total, each: total / n };
+}));
+const sum = (arr, f) => arr.reduce((s, x) => s + f(x), 0);
 
-function renderBudget() {
-  const n = people;
-  document.getElementById("nOut").textContent = n;
-  document.getElementById("minus").disabled = n <= MIN_PEOPLE;
-  document.getElementById("plus").disabled = n >= MAX_PEOPLE;
-  document.querySelectorAll(".nTravelers").forEach(el => el.textContent = plural(n, "traveler"));
+// The three who do the whole trip pay every line; the 4th only pays lines that include four people.
+const fullEach = sum(lines, l => l.each);
+const parisEach = sum(lines.filter(l => l.n === 4), l => l.each);
+const allTotal = sum(lines, l => l.total);
+document.getElementById("tFull").textContent = usd(fullEach * FX);
+document.getElementById("tFullEur").textContent = eur(fullEach) + " each";
+document.getElementById("tParis").textContent = usd(parisEach * FX);
+document.getElementById("tParisEur").textContent = eur(parisEach) + " · Dec 2–7";
+document.getElementById("tAll").textContent = usd(allTotal * FX);
+document.getElementById("tAllEur").textContent = eur(allTotal) + " for the group";
 
-  const items = BIG.map(b => ({ label: b.label, note: b.note(n), usd: b.cost(n) }));
-  const total = items.reduce((s, b) => s + b.usd, 0);
-  document.getElementById("tTotal").textContent = usd(total);
-  document.getElementById("tEach").textContent = usd(total / n);
-  document.getElementById("budgetRows").innerHTML = items.map(b => `
-    <tr><td>${b.label}<span class="note">${b.note}</span></td>
-    <td class="r num">${usd(b.usd)}</td><td class="r num">${usd(b.usd / n)}</td></tr>`).join("") +
-    `<tr class="total"><td>Total</td><td class="r num">${usd(total)}</td><td class="r num">${usd(total / n)}</td></tr>`;
-}
+const parts = [
+  { label: "Amsterdam · Nov 28 – Dec 1", note: "3 people: food, trams, Van Gogh, Anne Frank, Light Festival cruise, Haarlem",
+    f: l => l.day.city === "ams" },
+  { label: "Eurostar to Paris · Dec 2", note: "3 people, if not booked yet", f: l => /Eurostar/.test(l.label) },
+  { label: "Paris · Dec 2 – 7", note: "4 people: food, metro, Louvre, Sainte-Chapelle, Eiffel Tower, cruise, CDG taxi",
+    f: l => (l.day.city === "par" || l.day.city === "home") && !/Eurostar/.test(l.label) },
+];
+document.getElementById("budgetRows").innerHTML = parts.map(p => {
+  const ls = lines.filter(p.f);
+  const t = sum(ls, l => l.total);
+  const n = Math.max(...ls.map(l => l.n));
+  return `<tr><td>${p.label}<span class="note">${p.note}</span></td>
+    <td class="r num">${usd(t * FX)}<span class="note">${eur(t)}</span></td>
+    <td class="r num">${usd(t / n * FX)}<span class="note">${eur(t / n)}</span></td></tr>`;
+}).join("") + `<tr class="total"><td>Total</td><td class="r num">${usd(allTotal * FX)}</td><td class="r num">—</td></tr>`;
 
-function setPeople(n) {
-  people = clamp(n);
-  const url = new URL(location.href);
-  if (people === DEFAULT_PEOPLE) url.searchParams.delete("people"); else url.searchParams.set("people", people);
-  history.replaceState(null, "", url);
-  renderBudget();
-}
-document.getElementById("minus").addEventListener("click", () => setPeople(people - 1));
-document.getElementById("plus").addEventListener("click", () => setPeople(people + 1));
-renderBudget();
+document.getElementById("saveList").innerHTML = SAVE.map(s => `
+  <article class="save-card">
+    <div class="save-head"><h3>${s.title}</h3><span class="badge ${s.tone}">${s.verdict}</span></div>
+    <p>${s.body}</p>
+    ${s.fallback ? `<p class="muted">${s.fallback}</p>` : ""}
+  </article>`).join("");
 
+const cityName = { ams: "Amsterdam", par: "Paris", home: "Travel day" };
 document.getElementById("dayList").innerHTML = DAYS.map(d => {
   const dt = new Date(d.date + "T12:00:00");
   const dow = dt.toLocaleDateString("en-US", { weekday: "short" });
   const mon = dt.toLocaleDateString("en-US", { month: "short" });
+  const ls = lines.filter(l => l.day === d);
+  const total = sum(ls, l => l.total);
+  const costRows = ls.map(l => {
+    const each = l.group ? ` <span class="muted">(${eur(l.each)} ea)</span>` : l.eur ? ` <span class="muted">(${eur(l.eur)} × ${l.n})</span>` : "";
+    return `<div class="row"><span>${l.label}${each}</span><span>${l.total ? eur(l.total) : "Free"}</span></div>`;
+  }).join("");
+  const costsBox = ls.length ? `
+    <div class="costs"><div class="hd">${d.n} of us</div>${costRows}
+      <div class="row sum"><span>Day total</span><span>${eur(total)} · ${usd(total * FX)}</span></div></div>`
+    : `<div class="costs"><div class="hd">${d.n} of us</div><div class="row"><span>No day costs</span><span>—</span></div></div>`;
   return `
-  <article class="day ${d.city}" data-city="${d.city}">
-    <div class="day-head">
+  <article class="day ${d.city}" data-city="${d.city === "home" ? "" : d.city}">
+    <div class="day-head with-cost">
       <div class="date"><div class="dow">${dow}</div><div class="dom">${dt.getDate()}</div><div class="mon">${mon}</div></div>
       <div class="day-title"><h3>${d.title}</h3><div class="city">${d.where}</div></div>
+      <div class="day-cost">${total ? `<b class="num">${usd(total * FX)}</b>for ${d.n}` : ""}</div>
     </div>
-    <div class="day-body">
+    <div class="day-body with-cost">
       <ul class="plan">${d.plan.map(([w, t]) => `<li><span class="when">${w}</span><span>${t}</span></li>`).join("")}</ul>
+      ${costsBox}
       ${d.tip ? `<div class="tip">${d.tip}</div>` : ""}
     </div>
   </article>`;
