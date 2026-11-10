@@ -35,6 +35,7 @@
         <span class="home-dot" aria-hidden="true">🏠</span>
         <span><span class="home-title">130 Rue de Turenne</span><span class="home-sub">Our Airbnb · tap to see what's nearby</span></span>
       </button>
+      <div class="place-head" id="placeHead" hidden></div>
       <div class="mtabs" role="tablist" aria-label="Map views">
         <button type="button" role="tab" id="tab-sights" aria-selected="true" data-view="sights">🗺️ Sights &amp; routes</button>
         <button type="button" role="tab" id="tab-nearby" aria-selected="false" data-view="nearby">☕ Nearby</button>
@@ -53,6 +54,8 @@
         <p class="count" id="placeCount"></p>
         <ul class="plist" id="placeList"></ul>
       </div>
+
+      <div id="view-place" role="region" aria-label="Place details" hidden></div>
 
       <p class="mfoot" id="attrib"></p>
     </div>
@@ -89,7 +92,7 @@ function metroMinutes(m) {
 }
 
 let D, map, routeLayer, sightLayer, placeLayers = {}, homeMarker;
-let selected = null, mode = null, view = "sights";
+let selected = null, mode = null, view = "sights", placeSel = null;
 
 const navH = () => document.documentElement.style.setProperty("--nav-h", document.querySelector(".pagetabs").offsetHeight + "px");
 navH(); window.addEventListener("resize", navH);
@@ -242,8 +245,7 @@ function init(data) {
     const mk = L.marker([p.lat, p.lon], {
       icon: L.divIcon({ className: "", html: `<div class="dot dot-${p.g}">${GROUPS[p.g].icon}</div>`, iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -11] }),
       title: p.name, riseOnHover: true,
-    }).bindPopup(() => placePopup(p), { maxWidth: 260, autoPanPaddingTopLeft: [20, 70], autoPanPaddingBottomRight: [20, 180] })
-      .on("click", lowerSheet);
+    }).on("click", () => openPlace(p));
     mk.addTo(placeLayers[p.g]);
     p._marker = mk; p._i = i;
   });
@@ -281,6 +283,7 @@ function init(data) {
   setSheet("peek");
   const h = new URLSearchParams(location.hash.slice(1));
   if (h.get("view") === "nearby") goNearby();
+  else if (h.get("place") && D.places[+h.get("place")]) openPlace(D.places[+h.get("place")], true);
   else if (h.get("sight") && D.sights.some(s => s.id === h.get("sight"))) select(h.get("sight"), h.get("mode"), true);
   else fitSights();
   syncZoomClass();
@@ -293,15 +296,22 @@ function fitSights() {
 function setHash() {
   const p = new URLSearchParams();
   if (view === "nearby") p.set("view", "nearby");
+  else if (view === "place" && placeSel) p.set("place", placeSel._i);
   else if (selected) { p.set("sight", selected); if (mode) p.set("mode", mode); }
   history.replaceState(null, "", p.toString() ? "#" + p.toString() : location.pathname);
 }
 
 function showView(v) {
   view = v;
-  document.querySelectorAll(".mtabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.view === v));
+  if (v !== "place") unhighlightPlace();
+  const tab = v === "place" ? "nearby" : v;
+  document.querySelectorAll(".mtabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.view === tab));
   document.getElementById("view-sights").hidden = v !== "sights";
   document.getElementById("view-nearby").hidden = v !== "nearby";
+  document.getElementById("view-place").hidden = v !== "place";
+  document.getElementById("placeHead").hidden = v !== "place";
+  sheet.classList.toggle("placing", v === "place");
+  setSheet(sheet.dataset.state);
   document.getElementById("sheetBody").scrollTop = 0;
   setHash();
 }
@@ -517,22 +527,164 @@ function drawRoute(moveMap = true) {
 }
 
 /* ---------- Nearby ---------- */
-function placePopup(p) {
+const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+const DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+// Our Paris days, Wed 2 – Mon 7 Dec, as weekday indexes (Mon = 0).
+const STAY = [{ d: 2, i: 2 }, { d: 3, i: 3 }, { d: 4, i: 4 }, { d: 5, i: 5 }, { d: 6, i: 6 }, { d: 7, i: 0 }];
+
+// Parses the common OpenStreetMap opening_hours forms ("Mo-Fr 08:00-19:00; Sa 09:00-13:00,14:00-18:00; Su off").
+// Returns 7 lists of [startMin, endMin], or null if the string uses anything fancier.
+function parseHours(str) {
+  if (!str) return null;
+  const s = str.trim();
+  const week = Array.from({ length: 7 }, () => []);
+  if (s === "24/7") return week.map(() => [[0, 1440]]);
+  const toMin = t => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+  // A comma after a time that's followed by a day starts a new rule ("Mo-Sa 08:30-16:00, Su closed").
+  const rules = s.replace(/(\d|off|closed)\s*,\s*(?=(?:Mo|Tu|We|Th|Fr|Sa|Su)\b)/g, "$1; ").split(";").map(r => r.trim()).filter(Boolean);
+  for (let rule of rules) {
+    if (/^(PH|SH)\b(?!\s*,\s*(Mo|Tu|We|Th|Fr|Sa|Su))/.test(rule)) continue;   // public/school holiday rules don't apply to our dates
+    rule = rule.replace(/\b(PH|SH)\b\s*,?\s*|,\s*\b(PH|SH)\b/g, "").trim();
+    if (!rule) continue;
+    const m = rule.match(/^((?:(?:Mo|Tu|We|Th|Fr|Sa|Su)(?:\s*-\s*(?:Mo|Tu|We|Th|Fr|Sa|Su))?\s*,?\s*)+)?\s*(.*)$/);
+    if (!m) return null;
+    let days = [0, 1, 2, 3, 4, 5, 6];
+    if (m[1]) {
+      days = [];
+      for (const part of m[1].split(",").map(x => x.trim()).filter(Boolean)) {
+        const [a, b] = part.split("-").map(x => DAYS.indexOf(x.trim()));
+        if (a < 0 || (b !== undefined && b < 0)) return null;
+        if (b === undefined) days.push(a);
+        else for (let d = a; ; d = (d + 1) % 7) { days.push(d); if (d === b) break; }
+      }
+    }
+    const times = m[2].trim();
+    let ranges = [];
+    if (!/^(off|closed)$/i.test(times)) {
+      for (const t of times.split(",").map(x => x.trim())) {
+        const r = t.match(/^(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})$/);
+        if (!r) return null;
+        ranges.push([toMin(r[1]), toMin(r[2])]);
+      }
+    }
+    days.forEach(d => week[d] = ranges);
+  }
+  return week;
+}
+const fmtMin = m => `${String(Math.floor(m / 60) % 24).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+const fmtDay = rs => rs.length ? rs.map(([a, b]) => a === 0 && b === 1440 ? "24 hours" : `${fmtMin(a)}–${fmtMin(b)}`).join(", ") : "Closed";
+
+function parisNow() {
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Paris", weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+    .formatToParts(new Date()).reduce((o, x) => (o[x.type] = x.value, o), {});
+  return { day: DAY_NAMES.indexOf(parts.weekday), min: +parts.hour * 60 + +parts.minute };
+}
+// "open" | "closed", with when it next changes. Handles ranges that run past midnight.
+function openStatus(week) {
+  const { day, min } = parisNow();
+  const yest = (day + 6) % 7;
+  for (const [a, b] of week[yest]) if (b < a && min < b) return { open: true, until: b };
+  for (const [a, b] of week[day]) {
+    const end = b < a ? b + 1440 : b;
+    if (min >= a && min < end) return { open: true, until: end % 1440 };
+  }
+  for (let k = 0; k < 7; k++) {
+    const d = (day + k) % 7;
+    const next = week[d].map(r => r[0]).filter(a => k > 0 || a > min).sort((x, y) => x - y)[0];
+    if (next !== undefined) return { open: false, next, day: k === 0 ? "today" : k === 1 ? "tomorrow" : DAY_NAMES[d] };
+  }
+  return { open: false };
+}
+
+const COMPASS = ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"];
+function direction(p) {
+  const h = D.home, y = p.lat - h.lat, x = (p.lon - h.lon) * Math.cos(h.lat * Math.PI / 180);
+  const deg = (Math.atan2(x, y) * 180 / Math.PI + 360) % 360;
+  return COMPASS[Math.round(deg / 45) % 8];
+}
+
+function statusBadge(p) {
+  const week = parseHours(p.hours);
+  if (!week) return "";
+  const st = openStatus(week);
+  return st.open ? '<span class="open-dot on">Open now</span>' : '<span class="open-dot">Closed now</span>';
+}
+
+function placeDetail(p) {
   const home = D.home;
-  const q = encodeURIComponent(`${p.name}, ${p.addr ? p.addr + ", " : ""}Paris`);
+  const q = encodeURIComponent(`${p.name}, ${p.addr ? p.addr + ", " : ""}${p.pc || ""} Paris`);
   const mins = walkMin(p.m * 1.25);
-  return `<div class="ppop">
-    <b>${esc(p.name)}</b>
-    <div class="muted">${GROUPS[p.g].icon} ${esc(p.label)}${p.cuisine ? " · " + esc(p.cuisine) : ""}</div>
-    <div>🚶 ${mins} min from the Airbnb · ${km(p.m)}</div>
-    ${p.addr ? `<div>📍 ${esc(p.addr)}</div>` : ""}
-    ${p.hours ? `<div>🕒 ${esc(p.hours)}</div>` : ""}
-    <div class="plinks">
-      ${p.web ? `<a href="${esc(p.web)}" target="_blank" rel="noopener noreferrer">Website ↗</a>` : ""}
-      <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener noreferrer">Google Maps ↗</a>
-      <a href="${gmaps(p.lat, p.lon, "walking", home)}" target="_blank" rel="noopener noreferrer">Walk there ↗</a>
-    </div>
-  </div>`;
+  const week = parseHours(p.hours);
+  let hours;
+  if (week) {
+    const st = openStatus(week);
+    const now = st.open
+      ? `<span class="pd-status on">Open now</span> until ${fmtMin(st.until)}`
+      : `<span class="pd-status">Closed now</span>${st.next !== undefined ? ` · opens ${st.day} at ${fmtMin(st.next)}` : ""}`;
+    const today = parisNow().day;
+    const closedStay = STAY.filter(x => !week[x.i].length).map(x => `${DAY_NAMES[x.i]} ${x.d}`);
+    hours = `
+      <div class="pd-row"><span class="pd-ic">🕒</span><div>${now} <span class="muted">(Paris time)</span>
+        <table class="pd-hours">${DAY_NAMES.map((n, i) => `<tr class="${i === today ? "today" : ""}"><th>${n}</th><td>${fmtDay(week[i])}</td></tr>`).join("")}</table>
+        ${closedStay.length ? `<div class="pd-warn">⚠️ Closed on our Paris day${closedStay.length > 1 ? "s" : ""}: ${closedStay.join(", ")} Dec</div>`
+          : `<div class="pd-ok">✓ Open every day we're in Paris (Dec 2–7)</div>`}</div></div>`;
+  } else if (p.hours) {
+    hours = `<div class="pd-row"><span class="pd-ic">🕒</span><div>${esc(p.hours)}</div></div>`;
+  } else {
+    hours = `<div class="pd-row"><span class="pd-ic">🕒</span><div class="muted">Hours aren't listed. Check “Reviews &amp; photos” before going.</div></div>`;
+  }
+  const kind = [p.label, p.cuisine && p.cuisine.toLowerCase() !== p.label.toLowerCase() ? p.cuisine : null].filter(Boolean).join(" · ");
+  const actions = [
+    `<a class="pd-act primary" href="${gmaps(p.lat, p.lon, "walking", home)}" target="_blank" rel="noopener noreferrer">🚶<span>Walk ${mins} min</span></a>`,
+    p.phone ? `<a class="pd-act" href="tel:${esc(p.phone.replace(/\s/g, ""))}">📞<span>Call</span></a>` : "",
+    p.web ? `<a class="pd-act" href="${esc(p.web)}" target="_blank" rel="noopener noreferrer">🌐<span>Website</span></a>` : "",
+    p.menu ? `<a class="pd-act" href="${esc(p.menu)}" target="_blank" rel="noopener noreferrer">📋<span>Menu</span></a>` : "",
+    p.insta ? `<a class="pd-act" href="${esc(p.insta)}" target="_blank" rel="noopener noreferrer">📷<span>Instagram</span></a>` : "",
+    `<a class="pd-act" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener noreferrer">⭐<span>Reviews &amp; photos</span></a>`,
+    `<a class="pd-act" href="https://maps.apple.com/?q=${encodeURIComponent(p.name)}&ll=${p.lat},${p.lon}" target="_blank" rel="noopener noreferrer">🍎<span>Apple Maps</span></a>`,
+  ].join("");
+  const head = `
+    <button type="button" class="pd-back" data-back aria-label="Back to nearby">←</button>
+    <span class="dot dot-${p.g} pd-dot" aria-hidden="true">${GROUPS[p.g].icon}</span>
+    <div class="pd-title"><h2>${esc(p.name)}</h2><div class="muted">${statusBadge(p)}${esc(kind)}${p.chain ? ` · part of ${esc(p.chain)}` : ""}</div></div>`;
+  return { head, body: `
+    ${p.desc ? `<p class="pd-desc">${esc(p.desc)}</p>` : ""}
+    <div class="pd-acts">${actions}</div>
+    <div class="pd-row"><span class="pd-ic">📍</span><div>${p.addr ? `<b>${esc(p.addr)}</b>${p.pc ? `, ${esc(p.pc)} Paris` : ""}<br>` : ""}
+      ${mins} min walk (${km(p.m)}) ${direction(p)} of the Airbnb${p.level ? ` · floor ${esc(p.level)}` : ""}</div></div>
+    ${hours}
+    ${p.phone ? `<div class="pd-row"><span class="pd-ic">📞</span><div><a href="tel:${esc(p.phone.replace(/\s/g, ""))}">${esc(p.phone)}</a></div></div>` : ""}
+    ${p.f && p.f.length ? `<div class="pd-row"><span class="pd-ic">✨</span><div class="pd-feats">${p.f.map(x => `<span>${esc(x)}</span>`).join("")}</div></div>` : ""}
+    <p class="pd-src">From OpenStreetMap${p.check ? `, last checked ${esc(p.check)}` : ""}. December hours can change around the holidays, so confirm before a special trip.</p>` };
+}
+
+let placeHi = null;
+function unhighlightPlace() {
+  if (placeHi) { placeHi._icon && placeHi._icon.querySelector(".dot")?.classList.remove("dot-on"); placeHi.setZIndexOffset(0); placeHi = null; }
+  placeSel = null;
+}
+function openPlace(p, fromHash) {
+  unhighlightPlace();
+  clearRoute();
+  showView("place");
+  placeSel = p;
+  const det = placeDetail(p);
+  document.getElementById("view-place").innerHTML = det.body;
+  const ph = document.getElementById("placeHead");
+  ph.innerHTML = det.head;
+  ph.querySelector("[data-back]").addEventListener("click", () => { showView("nearby"); routeLayer.clearLayers(); });
+  setSheet(sheet.dataset.state);
+  if (!GROUPS[p.g].on) document.querySelector(`.chip[data-g="${p.g}"]`)?.click();
+  placeHi = p._marker;
+  placeHi.setZIndexOffset(1500);
+  // The marker's element only exists once it's on the map; restyle it after the move if needed.
+  const mark = () => placeHi && placeHi === p._marker && placeHi._icon && placeHi._icon.querySelector(".dot").classList.add("dot-on");
+  mark();
+  L.polyline([[D.home.lat, D.home.lon], [p.lat, p.lon]], { color: "#ff6a2b", weight: 3, dashArray: "2 8", lineCap: "round", interactive: false }).addTo(routeLayer);
+  if (isMobile()) setSheet("half");
+  flyVisible([p.lat, p.lon], Math.max(fromHash ? 18 : map.getZoom(), 17));
+  map.once("moveend", mark);
+  setHash();
 }
 
 function renderChips() {
@@ -560,7 +712,7 @@ function renderPlaces() {
     <li><button type="button" class="pitem" data-i="${p._i}">
       <span class="dot dot-${p.g}" aria-hidden="true">${GROUPS[p.g].icon}</span>
       <span class="ptext"><span class="pname">${esc(p.name)}</span>
-        <span class="pmeta">${esc(p.label)}${p.cuisine ? " · " + esc(p.cuisine) : ""}${p.addr ? " · " + esc(p.addr) : ""}</span></span>
+        <span class="pmeta">${statusBadge(p)}${esc(p.label)}${p.cuisine ? " · " + esc(p.cuisine) : ""}${p.addr ? " · " + esc(p.addr) : ""}</span></span>
       <span class="pdist">${walkMin(p.m * 1.25)} min</span>
     </button></li>`).join("") || '<li class="empty">Nothing matches. Try turning on more categories.</li>';
 }
@@ -568,11 +720,7 @@ function renderPlaces() {
 document.getElementById("placeList").addEventListener("click", e => {
   const b = e.target.closest("[data-i]");
   if (!b) return;
-  const p = D.places[+b.dataset.i];
-  routeLayer.clearLayers();
-  if (isMobile()) setSheet("peek");
-  flyVisible([p.lat, p.lon], 18);
-  map.once("moveend", () => p._marker.openPopup());
+  openPlace(D.places[+b.dataset.i]);
 });
 </script>
 <script src="theme.js"></script>

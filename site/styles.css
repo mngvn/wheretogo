@@ -368,3 +368,33 @@ footer { padding: 28px 0 56px; color: var(--muted); font-size: 13px; border-top:
 .ppop .muted { color: #666; }
 .plinks { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px !important; }
 .leaflet-control-layers { font: 13px/1.4 Inter, system-ui, sans-serif; }
+
+/* Place detail card (map page) */
+.open-dot { display: inline-block; font-size: 11px; font-weight: 700; padding: 0 6px; border-radius: 999px; margin-right: 6px; background: var(--bad-soft); color: var(--bad); }
+.open-dot.on { background: var(--good-soft); color: var(--good); }
+.placing .home-row, .placing .mtabs { display: none; }
+.place-head { display: grid; grid-template-columns: 40px 46px 1fr; gap: 10px; align-items: center; padding-bottom: 12px; }
+.pd-back { width: 40px; height: 40px; font: inherit; font-size: 18px; font-weight: 700; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 50%; cursor: pointer; }
+.pd-title h2 { font-size: 21px; margin: 0 0 2px; line-height: 1.15; overflow-wrap: anywhere; }
+.pd-title .muted { font-size: 13px; }
+.pd-dot { width: 46px; height: 46px; font-size: 22px; }
+.pd-desc { font-size: 15px; margin: 0 0 10px; }
+.pd-acts { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 6px; padding: 0 16px 4px; }
+.pd-acts::-webkit-scrollbar { display: none; }
+.pd-act { flex: none; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 76px; padding: 10px 8px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); color: var(--text); text-decoration: none; font-size: 20px; }
+.pd-act span { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pd-act.primary { background: #2f6fed; border-color: #2f6fed; color: #fff; }
+.pd-row { display: grid; grid-template-columns: 28px 1fr; gap: 8px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.pd-ic { font-size: 18px; text-align: center; }
+.pd-status { font-weight: 700; color: var(--bad); }
+.pd-status.on { color: var(--good); }
+.pd-hours { border-collapse: collapse; margin-top: 8px; font-size: 14px; width: auto; }
+.pd-hours th, .pd-hours td { padding: 3px 14px 3px 0; border: 0; text-align: left; font-weight: 500; text-transform: none; letter-spacing: 0; font-size: 14px; color: var(--text); }
+.pd-hours th { color: var(--muted); width: 44px; }
+.pd-hours tr.today th, .pd-hours tr.today td { font-weight: 700; color: var(--text); }
+.pd-warn { margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--amber); background: var(--amber-soft); padding: 6px 10px; border-radius: 8px; }
+.pd-ok { margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--good); }
+.pd-feats { display: flex; flex-wrap: wrap; gap: 6px; }
+.pd-feats span { font-size: 13px; padding: 3px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+.pd-src { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; margin: 0; }
+.dot.dot-on { transform: scale(1.45); box-shadow: 0 0 0 4px #ff6a2b, 0 3px 10px rgba(0,0,0,.6); transition: transform .15s; }
